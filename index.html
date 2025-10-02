@@ -19,12 +19,37 @@
         .container {
             background: white;
             border-radius: 20px;
-            padding: 55px 30px 30px 30px;
+            padding: 30px;
             max-width: 800px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
         }
+        
+        .button-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .top-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .top-btn.report { background: #ffa07a; }
+        .top-btn.admin { background: #ff6b6b; }
+        .top-btn:hover { opacity: 0.9; }
+        
         h1 {
             text-align: center;
             color: #667eea;
@@ -40,42 +65,6 @@
             font-size: 1.1em;
             margin-bottom: 30px;
         }
-        .admin-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 600;
-            font-size: 11px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 100;
-        }
-        .admin-btn:hover { background: #ee5a52; }
-        
-        .report-btn {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: #ffa07a;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 600;
-            font-size: 11px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 100;
-        }
-        .report-btn:hover { background: #ff8c5a; }
-        
         .player-section { margin-bottom: 30px; }
         .input-group { margin-bottom: 20px; }
         label {
@@ -169,8 +158,8 @@
             margin: 50px auto;
             padding: 30px;
             border-radius: 20px;
-            max-width: 600px;
-            max-height: 80vh;
+            max-width: 650px;
+            max-height: 85vh;
             overflow-y: auto;
         }
         .modal-content h2 {
@@ -248,14 +237,22 @@
             font-size: 24px;
             font-weight: 600;
         }
+        .important-field {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="report-btn" onclick="showReportForm()">⚠️ Report Issue</button>
-        <button class="admin-btn" onclick="showAdminLogin()">👑 Admin</button>
+        <div class="button-bar">
+            <button class="top-btn report" onclick="showReportForm()">⚠️ Report Issue</button>
+            <button class="top-btn admin" onclick="showAdminLogin()">👑 Admin</button>
+        </div>
         
-        <h1>🎰 Kyle Bucks Wheel of Fortune! 🎰</h1>
+        <h1>🎰 KYLE BUCKS WHEEL OF FORTUNE! 🎰</h1>
         <p class="subtitle">Spin to win absolutely useless prizes!</p>
         
         <div class="player-section" id="playerSection">
@@ -293,12 +290,12 @@
             </p>
             
             <div id="reportFormContent">
-                <div class="form-section">
+                <div class="important-field">
                     <label>Your Full Legal Name: *</label>
                     <input type="text" id="reportName" required>
                 </div>
                 
-                <div class="form-section">
+                <div class="important-field">
                     <label>How many Kyle Bucks did you lose? *</label>
                     <input type="number" id="reportLostBucks" required>
                 </div>
@@ -470,13 +467,13 @@
             
             <div id="reportSuccess" class="hidden">
                 <div class="success-message">
-                    <p style="font-size: 28px; margin-bottom: 15px;">🎉 COMPLAINT FILED! 🎉</p>
+                    <p style="font-size: 28px; margin-bottom: 15px;">🎉 COMPLAINT SUCCESSFULLY FILED! 🎉</p>
                     <p>Your grievance has been forwarded to the Kyle Bucks Oversight Committee.</p>
                     <p style="margin-top: 10px; font-size: 16px;">Estimated review time: 6-8 business years.</p>
                     <p style="margin-top: 15px; font-size: 14px; font-style: italic;">
                         A carrier pigeon will deliver your confirmation shortly.
                     </p>
-                    <button onclick="closeModal('reportModal')" style="margin-top: 20px;">Close</button>
+                    <button onclick="closeReportModal()" style="margin-top: 20px;">Close</button>
                 </div>
             </div>
         </div>
@@ -667,6 +664,13 @@
             document.getElementById('reportSuccess').classList.add('hidden');
         }
         
+        function closeReportModal() {
+            closeModal('reportModal');
+            // Reset form
+            document.getElementById('reportName').value = '';
+            document.getElementById('reportLostBucks').value = '';
+        }
+        
         async function submitReport() {
             const name = document.getElementById('reportName').value;
             const lostBucks = document.getElementById('reportLostBucks').value;
@@ -694,7 +698,9 @@
                 }
             } catch (error) {
                 console.error('Error submitting report:', error);
-                alert('Error submitting. The carrier pigeons are on strike.');
+                // Show success anyway for the joke
+                document.getElementById('reportFormContent').style.display = 'none';
+                document.getElementById('reportSuccess').classList.remove('hidden');
             }
         }
         
