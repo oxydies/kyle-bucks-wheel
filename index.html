@@ -57,6 +57,25 @@
             z-index: 100;
         }
         .admin-btn:hover { background: #ee5a52; }
+        
+        .report-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #ffa07a;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 11px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        .report-btn:hover { background: #ff8c5a; }
+        
         .player-section { margin-bottom: 30px; }
         .input-group { margin-bottom: 20px; }
         label {
@@ -65,13 +84,17 @@
             font-weight: bold;
             color: #333;
         }
-        input[type="text"], input[type="password"], input[type="number"] {
+        input[type="text"], input[type="password"], input[type="number"], select, textarea {
             width: 100%;
             padding: 12px;
             border: 3px solid #667eea;
             border-radius: 10px;
             font-size: 16px;
             font-family: 'Fredoka', sans-serif;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         button {
             background: #667eea;
@@ -107,14 +130,6 @@
             align-items: center;
             margin: 30px 0;
             position: relative;
-        }
-        .wheel {
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            border: 10px solid #333;
-            position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
         }
         .pointer {
             position: absolute;
@@ -217,10 +232,27 @@
         }
         .add-prize-btn:hover { background: #3db8af; }
         .hidden { display: none; }
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #eee;
+        }
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        .success-message {
+            background: #4ecdc4;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <button class="report-btn" onclick="showReportForm()">⚠️ Report Issue</button>
         <button class="admin-btn" onclick="showAdminLogin()">👑 Admin</button>
         
         <h1>🎰 Kyle Bucks Wheel of Fortune! 🎰</h1>
@@ -248,6 +280,205 @@
             </div>
             
             <div class="result" id="result"></div>
+        </div>
+    </div>
+    
+    <!-- Report Issue Modal -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('reportModal')">&times;</span>
+            <h2>🚨 Kyle Bucks Discrepancy Report Form 🚨</h2>
+            <p style="margin-bottom: 20px; color: #666; font-style: italic;">
+                Please complete ALL fields with utmost seriousness and attention to detail.
+            </p>
+            
+            <div id="reportFormContent">
+                <div class="form-section">
+                    <label>Your Full Legal Name: *</label>
+                    <input type="text" id="reportName" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>How many Kyle Bucks did you lose? *</label>
+                    <input type="number" id="reportLostBucks" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>On a scale of 1-10, how would you rate this potato? 🥔 *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>1 - Disappointing Potato</option>
+                        <option>5 - Average Potato</option>
+                        <option>10 - Exceptional Potato</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is your quest? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is your favorite color? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is the airspeed velocity of an unladen swallow? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>African or European?</option>
+                        <option>I don't know that!</option>
+                        <option>Blue! No, yellow!</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>If you were a sandwich, what kind would you be and why? *</label>
+                    <textarea required></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <label>How many fingers am I holding up? *</label>
+                    <input type="number" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>Describe the color purple without using the word "purple": *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>Do you believe in life after love? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                        <option>I can feel something inside me say...</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is the meaning of life? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>How many roads must a man walk down? *</label>
+                    <input type="number" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>Would you rather fight 100 duck-sized horses or 1 horse-sized duck? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>100 duck-sized horses</option>
+                        <option>1 horse-sized duck</option>
+                        <option>Neither, I choose peace</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>Spell "supercalifragilisticexpialidocious" backwards: *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>What sound does a giraffe make? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>If a tree falls in the forest and no one is around, does it make a sound? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>Yes</option>
+                        <option>No</option>
+                        <option>Only if Kyle hears it</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>How many licks does it take to get to the center of a Tootsie Pop? *</label>
+                    <input type="number" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is your superhero name? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>On a scale of 1-10, how orange is the number 7? *</label>
+                    <input type="number" min="1" max="10" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>If you could be any kitchen appliance, which would you be? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>Toaster</option>
+                        <option>Blender</option>
+                        <option>Microwave</option>
+                        <option>That drawer we throw everything in</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>What did you have for breakfast on March 17, 2019? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>How do you feel about the socioeconomic implications of shoelaces? *</label>
+                    <textarea required></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <label>What's heavier: a pound of feathers or a pound of bricks? *</label>
+                    <select required>
+                        <option value="">Select...</option>
+                        <option>Feathers</option>
+                        <option>Bricks</option>
+                        <option>They're the same</option>
+                        <option>My crushing sense of existential dread</option>
+                    </select>
+                </div>
+                
+                <div class="form-section">
+                    <label>If you were a color, what temperature would you be? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>How many clouds did you see yesterday? *</label>
+                    <input type="number" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>What is the capital of Narnia? *</label>
+                    <input type="text" required>
+                </div>
+                
+                <div class="form-section">
+                    <label>Please describe your relationship with office furniture: *</label>
+                    <textarea required></textarea>
+                </div>
+                
+                <button onclick="submitReport()">📋 Submit Official Complaint</button>
+            </div>
+            
+            <div id="reportSuccess" class="hidden">
+                <div class="success-message">
+                    <p style="font-size: 28px; margin-bottom: 15px;">🎉 COMPLAINT FILED! 🎉</p>
+                    <p>Your grievance has been forwarded to the Kyle Bucks Oversight Committee.</p>
+                    <p style="margin-top: 10px; font-size: 16px;">Estimated review time: 6-8 business years.</p>
+                    <p style="margin-top: 15px; font-size: 14px; font-style: italic;">
+                        A carrier pigeon will deliver your confirmation shortly.
+                    </p>
+                    <button onclick="closeModal('reportModal')" style="margin-top: 20px;">Close</button>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -332,8 +563,8 @@
                 ctx.rotate(i * sliceAngle + sliceAngle / 2);
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
-                ctx.font = 'bold 11px Arial';
-                const text = prizes[i].substring(0, 25);
+                ctx.font = 'bold 10px Arial';
+                const text = prizes[i].substring(0, 20);
                 ctx.fillText(text, radius / 2, 5);
                 ctx.restore();
             }
@@ -429,6 +660,45 @@
             }
         }
         
+        // Report Issue Functions
+        function showReportForm() {
+            document.getElementById('reportModal').style.display = 'block';
+            document.getElementById('reportFormContent').style.display = 'block';
+            document.getElementById('reportSuccess').classList.add('hidden');
+        }
+        
+        async function submitReport() {
+            const name = document.getElementById('reportName').value;
+            const lostBucks = document.getElementById('reportLostBucks').value;
+            
+            if (!name || !lostBucks) {
+                alert('Please fill in your name and how many Kyle Bucks you lost!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: name,
+                        lostBucks: lostBucks
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('reportFormContent').style.display = 'none';
+                    document.getElementById('reportSuccess').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                alert('Error submitting. The carrier pigeons are on strike.');
+            }
+        }
+        
+        // Admin functions
         function showAdminLogin() {
             document.getElementById('adminLoginModal').style.display = 'block';
         }
