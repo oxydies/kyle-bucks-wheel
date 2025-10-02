@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎰 Kyle Bucks Wheel of Fortune 🎰</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Fredoka', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -20,75 +16,65 @@
             align-items: center;
             padding: 20px;
         }
-        
         .container {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 55px 30px 30px 30px;
             max-width: 800px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
         }
-        
         h1 {
             text-align: center;
             color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Bangers', cursive;
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
         }
-        
         .subtitle {
             text-align: center;
             color: #764ba2;
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin-bottom: 30px;
         }
-        
         .admin-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 12px;
+            right: 12px;
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 6px 14px;
+            border-radius: 15px;
             cursor: pointer;
-            font-family: 'Comic Sans MS', cursive;
-            font-weight: bold;
-            font-size: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 11px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 100;
         }
-        
         .admin-btn:hover {
             background: #ee5a52;
         }
-        
-        .player-section {
-            margin-bottom: 30px;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
+        .player-section { margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
         }
-        
         input[type="text"], input[type="password"], input[type="number"] {
             width: 100%;
             padding: 12px;
             border: 3px solid #667eea;
             border-radius: 10px;
             font-size: 16px;
-            font-family: 'Comic Sans MS', cursive;
+            font-family: 'Fredoka', sans-serif;
         }
-        
         button {
             background: #667eea;
             color: white;
@@ -96,33 +82,27 @@
             padding: 15px 30px;
             border-radius: 10px;
             cursor: pointer;
-            font-family: 'Comic Sans MS', cursive;
-            font-weight: bold;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
             font-size: 18px;
             width: 100%;
             margin-top: 10px;
         }
-        
-        button:hover:not(:disabled) {
-            background: #5568d3;
-        }
-        
+        button:hover:not(:disabled) { background: #5568d3; }
         button:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
-        
         .balance-display {
             background: #ffe66d;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 600;
             margin: 20px 0;
             border: 3px dashed #667eea;
         }
-        
         .wheel-container {
             display: flex;
             justify-content: center;
@@ -130,7 +110,6 @@
             margin: 30px 0;
             position: relative;
         }
-        
         .wheel {
             width: 400px;
             height: 400px;
@@ -139,7 +118,6 @@
             position: relative;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
         }
-        
         .pointer {
             position: absolute;
             top: -30px;
@@ -152,7 +130,6 @@
             border-top: 40px solid #ff6b6b;
             z-index: 10;
         }
-        
         .result {
             background: #4ecdc4;
             padding: 20px;
@@ -160,10 +137,9 @@
             text-align: center;
             margin-top: 20px;
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 600;
             display: none;
         }
-        
         .modal {
             display: none;
             position: fixed;
@@ -175,7 +151,6 @@
             z-index: 1000;
             overflow-y: auto;
         }
-        
         .modal-content {
             background: white;
             margin: 50px auto;
@@ -185,7 +160,17 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-        
+        .modal-content h2 {
+            font-family: 'Bangers', cursive;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .modal-content h3 {
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
         .close-btn {
             float: right;
             font-size: 30px;
@@ -193,65 +178,36 @@
             cursor: pointer;
             color: #666;
         }
-        
-        .close-btn:hover {
-            color: #000;
-        }
-        
-        .prize-list {
-            margin-top: 20px;
-        }
-        
+        .close-btn:hover { color: #000; }
+        .prize-list { margin-top: 20px; }
         .prize-item {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
         }
-        
-        .prize-item input {
-            flex: 1;
-        }
-        
-        .player-list {
-            margin-top: 20px;
-        }
-        
+        .prize-item input { flex: 1; }
+        .player-list { margin-top: 20px; }
         .player-item {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
             align-items: center;
         }
-        
-        .player-item input[type="text"] {
-            flex: 1;
-        }
-        
+        .player-item input[type="text"] { flex: 1; }
         .player-item input[type="number"] {
             width: 100px;
             padding: 8px;
             border: 2px solid #667eea;
             border-radius: 5px;
-            font-family: 'Comic Sans MS', cursive;
+            font-family: 'Fredoka', sans-serif;
         }
-        
         .small-btn {
             padding: 8px 15px;
             font-size: 14px;
             width: auto;
             margin: 0;
         }
-        
-        .hidden {
-            display: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #667eea;
-            font-size: 18px;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -286,7 +242,6 @@
         </div>
     </div>
     
-    <!-- Admin Login Modal -->
     <div id="adminLoginModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('adminLoginModal')">&times;</span>
@@ -299,7 +254,6 @@
         </div>
     </div>
     
-    <!-- Admin Panel Modal -->
     <div id="adminPanel" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('adminPanel')">&times;</span>
@@ -328,7 +282,6 @@
         let players = {};
         let currentPlayerName = '';
         
-        // Load initial data
         async function loadData() {
             try {
                 const response = await fetch('/api/data');
@@ -340,7 +293,6 @@
             }
         }
         
-        // Initialize wheel
         function drawWheel() {
             const canvas = document.getElementById('wheelCanvas');
             const ctx = canvas.getContext('2d');
@@ -366,20 +318,18 @@
                 ctx.fill();
                 ctx.stroke();
                 
-                // Add text
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(i * sliceAngle + sliceAngle / 2);
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
-                ctx.font = 'bold 11px Comic Sans MS';
+                ctx.font = 'bold 11px Arial';
                 const text = prizes[i].substring(0, 25);
                 ctx.fillText(text, radius / 2, 5);
                 ctx.restore();
             }
         }
         
-        // Player functions
         async function checkPlayer() {
             const name = document.getElementById('playerName').value.trim();
             if (!name) {
@@ -440,14 +390,12 @@
                     return;
                 }
                 
-                // Update balance
                 updateBalance(data.newBalance);
                 
-                // Animate spin
                 const canvas = document.getElementById('wheelCanvas');
                 const prizeIndex = data.prizeIndex;
                 const degreesPerSlice = 360 / prizes.length;
-                const extraSpins = 1800; // 5 full rotations
+                const extraSpins = 1800;
                 const targetDegree = extraSpins + (prizeIndex * degreesPerSlice) + (degreesPerSlice / 2);
                 
                 canvas.style.transform = `rotate(${targetDegree}deg)`;
@@ -472,7 +420,6 @@
             }
         }
         
-        // Admin functions
         function showAdminLogin() {
             document.getElementById('adminLoginModal').style.display = 'block';
         }
@@ -527,9 +474,7 @@
             prizes.forEach((prize, index) => {
                 const div = document.createElement('div');
                 div.className = 'prize-item';
-                div.innerHTML = `
-                    <input type="text" value="${prize}" id="prize-${index}">
-                `;
+                div.innerHTML = `<input type="text" value="${prize}" id="prize-${index}">`;
                 container.appendChild(div);
             });
         }
@@ -568,10 +513,11 @@
             for (const [name, balance] of Object.entries(players)) {
                 const div = document.createElement('div');
                 div.className = 'player-item';
+                const safeName = name.replace(/[^a-zA-Z0-9]/g, '_');
                 div.innerHTML = `
                     <input type="text" value="${name}" readonly style="flex: 1;">
-                    <input type="number" value="${balance}" id="player-balance-${name.replace(/[^a-zA-Z0-9]/g, '_')}">
-                    <button class="small-btn" onclick="deletePlayer('${name}')">🗑️</button>
+                    <input type="number" value="${balance}" id="player-balance-${safeName}">
+                    <button class="small-btn" onclick="deletePlayer('${name.replace(/'/g, "\\'")}')">🗑️</button>
                 `;
                 container.appendChild(div);
             }
@@ -631,7 +577,6 @@
             document.getElementById(id).style.display = 'none';
         }
         
-        // Initialize
         loadData();
     </script>
 </body>
