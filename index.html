@@ -56,9 +56,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             z-index: 100;
         }
-        .admin-btn:hover {
-            background: #ee5a52;
-        }
+        .admin-btn:hover { background: #ee5a52; }
         .player-section { margin-bottom: 30px; }
         .input-group { margin-bottom: 20px; }
         label {
@@ -186,6 +184,12 @@
             margin-bottom: 10px;
         }
         .prize-item input { flex: 1; }
+        .prize-item button {
+            padding: 8px 12px;
+            font-size: 14px;
+            width: auto;
+            margin: 0;
+        }
         .player-list { margin-top: 20px; }
         .player-item {
             display: flex;
@@ -207,6 +211,11 @@
             width: auto;
             margin: 0;
         }
+        .add-prize-btn {
+            background: #4ecdc4;
+            margin-bottom: 10px;
+        }
+        .add-prize-btn:hover { background: #3db8af; }
         .hidden { display: none; }
     </style>
 </head>
@@ -260,6 +269,7 @@
             <h2>👑 Admin Control Panel 👑</h2>
             
             <h3>Edit Prizes</h3>
+            <button class="add-prize-btn" onclick="addPrizeSlot()">➕ Add Prize Slot</button>
             <div class="prize-list" id="prizeList"></div>
             <button onclick="savePrizes()">💾 Save Prizes</button>
             
@@ -306,7 +316,6 @@
             if (slices === 0) return;
             
             const sliceAngle = (2 * Math.PI) / slices;
-            
             const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
             
             for (let i = 0; i < slices; i++) {
@@ -468,25 +477,40 @@
             document.getElementById('adminPanel').style.display = 'block';
         }
         
+        function addPrizeSlot() {
+            prizes.push('New prize ' + (prizes.length + 1));
+            renderPrizeList();
+        }
+        
+        function removePrize(index) {
+            if (confirm('Delete this prize?')) {
+                prizes.splice(index, 1);
+                renderPrizeList();
+            }
+        }
+        
         function renderPrizeList() {
             const container = document.getElementById('prizeList');
             container.innerHTML = '';
             prizes.forEach((prize, index) => {
                 const div = document.createElement('div');
                 div.className = 'prize-item';
-                div.innerHTML = `<input type="text" value="${prize}" id="prize-${index}">`;
+                div.innerHTML = `
+                    <input type="text" value="${prize}" id="prize-${index}">
+                    <button onclick="removePrize(${index})">🗑️</button>
+                `;
                 container.appendChild(div);
             });
         }
         
         async function savePrizes() {
             const newPrizes = [];
-            for (let i = 0; i < 25; i++) {
-                const input = document.getElementById(`prize-${i}`);
+            prizes.forEach((prize, index) => {
+                const input = document.getElementById(`prize-${index}`);
                 if (input) {
-                    newPrizes.push(input.value || `Prize ${i + 1}`);
+                    newPrizes.push(input.value || `Prize ${index + 1}`);
                 }
-            }
+            });
             
             try {
                 const response = await fetch('/api/admin/prizes', {
