@@ -1024,7 +1024,7 @@
                 
                 const data = await response.json();
                 if (data.success) {
-                    await loadRecentSpins();
+                    const spinsResp = await fetch("/api/recent-spins"); const spinsData = await spinsResp.json(); adminSpinHistory = spinsData.spins || []; displayRecentSpins(adminSpinHistory);
                     renderAdminSpinHistory();
                     alert('Spin deleted!');
                 }
@@ -1044,7 +1044,7 @@
                 
                 const data = await response.json();
                 if (data.success) {
-                    await loadRecentSpins();
+                    const spinsResp = await fetch("/api/recent-spins"); const spinsData = await spinsResp.json(); adminSpinHistory = spinsData.spins || []; displayRecentSpins(adminSpinHistory);
                     renderAdminSpinHistory();
                     alert('All spin history cleared!');
                 }
@@ -1289,7 +1289,7 @@
                 const data = await response.json();
                 prizes = data.prizes || [];
                 players = data.players || {};
-                await loadRecentSpins();
+                const spinsResp = await fetch("/api/recent-spins"); const spinsData = await spinsResp.json(); adminSpinHistory = spinsData.spins || []; displayRecentSpins(adminSpinHistory);
             } catch (error) {
                 console.error('Error loading admin data:', error);
             }
