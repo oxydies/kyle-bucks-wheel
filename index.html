@@ -911,19 +911,8 @@
         }
         
         function flashColors() {
-            let flashCount = 0;
-            const totalFlashes = 10;
-            
-            const flashInterval = setInterval(() => {
-                document.body.classList.toggle('invert');
-                flashCount++;
-                
-                if (flashCount >= totalFlashes) {
-                    clearInterval(flashInterval);
-                    document.body.classList.remove('invert');
-                }
-            }, 120);
-        }
+    // Flashing removed for accessibility
+}
         
         window.addEventListener('resize', () => {
             clownX = Math.min(clownX, window.innerWidth - clownSize);
