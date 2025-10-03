@@ -65,6 +65,47 @@
             font-size: 1.1em;
             margin-bottom: 30px;
         }
+        
+        .recent-spins {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .recent-spins h3 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .spin-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            font-size: 14px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .spin-item .name {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .spin-item .prize {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .spin-item .time {
+            color: #999;
+            font-size: 12px;
+        }
+        
         .player-section { margin-bottom: 30px; }
         .input-group { margin-bottom: 20px; }
         label {
@@ -254,6 +295,11 @@
         
         <h1>🎰 KYLE BUCKS WHEEL OF FORTUNE! 🎰</h1>
         <p class="subtitle">Spin to win absolutely useless prizes!</p>
+        
+        <div class="recent-spins" id="recentSpins">
+            <h3>📜 Recent Spins</h3>
+            <div id="spinFeed"></div>
+        </div>
         
         <div class="player-section" id="playerSection">
             <div class="input-group">
@@ -526,9 +572,47 @@
                 const data = await response.json();
                 prizes = data.prizes || [];
                 drawWheel();
+                loadRecentSpins();
             } catch (error) {
                 console.error('Error loading data:', error);
             }
+        }
+        
+        async function loadRecentSpins() {
+            try {
+                const response = await fetch('/api/recent-spins');
+                const data = await response.json();
+                displayRecentSpins(data.spins || []);
+            } catch (error) {
+                console.error('Error loading recent spins:', error);
+            }
+        }
+        
+        function displayRecentSpins(spins) {
+            const container = document.getElementById('spinFeed');
+            if (spins.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-style: italic;">No spins yet. Be the first!</p>';
+                return;
+            }
+            
+            container.innerHTML = spins.map(spin => {
+                const timeAgo = getTimeAgo(spin.timestamp);
+                return `
+                    <div class="spin-item">
+                        <span class="name">${spin.name}</span> won: 
+                        <span class="prize">"${spin.prize}"</span>
+                        <div class="time">${timeAgo}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
         }
         
         function drawWheel() {
@@ -640,6 +724,10 @@
                 setTimeout(() => {
                     document.getElementById('result').innerHTML = `🎉 YOU WON:<br>"${data.prize}" 🎉`;
                     document.getElementById('result').style.display = 'block';
+                    
+                    // Reload recent spins to show this one
+                    loadRecentSpins();
+                    
                     canvas.style.transform = 'rotate(0deg)';
                     canvas.style.transition = 'none';
                     setTimeout(() => {
@@ -666,7 +754,6 @@
         
         function closeReportModal() {
             closeModal('reportModal');
-            // Reset form
             document.getElementById('reportName').value = '';
             document.getElementById('reportLostBucks').value = '';
         }
@@ -698,7 +785,6 @@
                 }
             } catch (error) {
                 console.error('Error submitting report:', error);
-                // Show success anyway for the joke
                 document.getElementById('reportFormContent').style.display = 'none';
                 document.getElementById('reportSuccess').classList.remove('hidden');
             }
@@ -878,6 +964,8 @@
         }
         
         loadData();
+        // Refresh recent spins every 30 seconds
+        setInterval(loadRecentSpins, 30000);
     </script>
 </body>
 </html>
