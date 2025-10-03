@@ -91,6 +91,18 @@
             border-left: 3px solid #667eea;
         }
         
+        .admin-spin-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            font-size: 13px;
+            border-left: 3px solid #667eea;
+        }
+        
         .spin-item .name {
             font-weight: 600;
             color: #667eea;
@@ -655,6 +667,12 @@
             </div>
             <div class="player-list" id="playerListAdmin"></div>
             <button onclick="savePlayers()">💾 Save Players</button>
+            
+            <h3 style="margin-top: 30px;">Spin History Management</h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
+                <div id="adminSpinHistory"></div>
+            </div>
+            <button onclick="clearAllSpinHistory()" style="background: #ff6b6b; margin-top: 10px;">🗑️ Clear All History</button>
         </div>
     </div>
 
@@ -663,6 +681,7 @@
         let players = {};
         let currentPlayerName = '';
         let currentPrize = '';
+        let adminSpinHistory = [];
         
         async function loadData() {
             try {
@@ -680,6 +699,7 @@
             try {
                 const response = await fetch('/api/recent-spins');
                 const data = await response.json();
+                adminSpinHistory = data.spins || [];
                 displayRecentSpins(data.spins || []);
             } catch (error) {
                 console.error('Error loading recent spins:', error);
@@ -703,6 +723,70 @@
                     </div>
                 `;
             }).join('');
+        }
+        
+        function renderAdminSpinHistory() {
+            const container = document.getElementById('adminSpinHistory');
+            if (adminSpinHistory.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-style: italic; text-align: center;">No spin history</p>';
+                return;
+            }
+            
+            container.innerHTML = adminSpinHistory.map((spin, index) => {
+                const timeAgo = getTimeAgo(spin.timestamp);
+                return `
+                    <div class="admin-spin-item">
+                        <div>
+                            <span class="name">${spin.name}</span> won: 
+                            <span class="prize">"${spin.prize}"</span>
+                            <div class="time">${timeAgo}</div>
+                        </div>
+                        <button class="small-btn" onclick="deleteSpin(${index})" style="background: #ff6b6b; color: white;">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function deleteSpin(index) {
+            if (!confirm('Delete this spin from history?')) return;
+            
+            try {
+                const response = await fetch('/api/admin/delete-spin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ index })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    await loadRecentSpins();
+                    renderAdminSpinHistory();
+                    alert('Spin deleted!');
+                }
+            } catch (error) {
+                console.error('Error deleting spin:', error);
+                alert('Error deleting spin.');
+            }
+        }
+        
+        async function clearAllSpinHistory() {
+            if (!confirm('Clear ALL spin history? This cannot be undone!')) return;
+            
+            try {
+                const response = await fetch('/api/admin/clear-spins', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    await loadRecentSpins();
+                    renderAdminSpinHistory();
+                    alert('All spin history cleared!');
+                }
+            } catch (error) {
+                console.error('Error clearing history:', error);
+                alert('Error clearing history.');
+            }
         }
         
         function getTimeAgo(timestamp) {
@@ -861,10 +945,6 @@
         }
         
         function downloadCertificate() {
-            // Use html2canvas library for screenshot
-            const cert = document.getElementById('certificateContent');
-            
-            // For now, just tell them to screenshot
             alert('Take a screenshot of this certificate (Cmd+Shift+4 on Mac, or right-click and Save Image)!');
         }
         
@@ -940,6 +1020,7 @@
                 const data = await response.json();
                 prizes = data.prizes || [];
                 players = data.players || {};
+                await loadRecentSpins();
             } catch (error) {
                 console.error('Error loading admin data:', error);
             }
@@ -948,6 +1029,7 @@
         function showAdminPanel() {
             renderPrizeList();
             renderPlayerList();
+            renderAdminSpinHistory();
             document.getElementById('adminPanel').style.display = 'block';
         }
         
