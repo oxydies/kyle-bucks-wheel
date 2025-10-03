@@ -15,7 +15,88 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: filter 0.08s;
         }
+        
+        body.invert {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        
+        .bouncing-clown {
+            position: fixed;
+            font-size: 60px;
+            user-select: none;
+            z-index: 1;
+            pointer-events: none;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .corner-hit {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: rgba(255, 215, 0, 0.95);
+            padding: 50px 80px;
+            border-radius: 30px;
+            font-family: 'Impact', sans-serif;
+            font-weight: bold;
+            color: white;
+            font-size: 72px;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+            z-index: 10000;
+            pointer-events: none;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+            border: 5px solid white;
+        }
+        
+        .corner-hit.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .confetti {
+            position: fixed;
+            font-size: 28px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .money {
+            position: fixed;
+            font-size: 35px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fallMoney linear forwards;
+        }
+
+        @keyframes fallMoney {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(1080deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
         .container {
             background: white;
             border-radius: 20px;
@@ -24,6 +105,7 @@
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
+            z-index: 10;
         }
         
         .button-bar {
@@ -372,9 +454,51 @@
             border-radius: 10px;
             margin-bottom: 25px;
         }
+        
+        .confetti {
+            position: fixed;
+            font-size: 28px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .money {
+            position: fixed;
+            font-size: 35px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fallMoney linear forwards;
+        }
+
+        @keyframes fallMoney {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(1080deg) scale(1.5);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Bouncing Clown Background -->
+    <div class="bouncing-clown" id="clown">🤡</div>
+    <div class="corner-hit" id="cornerHit">CORNER HIT! 🎉</div>
+    
     <div class="container">
         <div class="button-bar">
             <button class="top-btn report" onclick="showReportForm()">⚠️ Report Issue</button>
@@ -682,6 +806,131 @@
         let currentPlayerName = '';
         let currentPrize = '';
         let adminSpinHistory = [];
+        
+        // Bouncing Clown Animation
+        const clown = document.getElementById('clown');
+        const cornerHit = document.getElementById('cornerHit');
+        
+        let clownX = Math.random() * (window.innerWidth - 100);
+        let clownY = Math.random() * (window.innerHeight - 100);
+        let clownSpeedX = 2.5;
+        let clownSpeedY = 2.5;
+        let clownRotation = 0;
+        let clownRotationSpeed = 3;
+        
+        const clownSize = 60;
+        let lastCornerHit = 0;
+        
+        function animateClown() {
+            clownX += clownSpeedX;
+            clownY += clownSpeedY;
+            clownRotation += clownRotationSpeed;
+            
+            // Check for corner hit (within 20 pixels)
+            const hitCorner = (
+                (clownX <= 20 && clownY <= 20) ||
+                (clownX >= window.innerWidth - clownSize - 20 && clownY <= 20) ||
+                (clownX <= 20 && clownY >= window.innerHeight - clownSize - 20) ||
+                (clownX >= window.innerWidth - clownSize - 20 && clownY >= window.innerHeight - clownSize - 20)
+            );
+            
+            if (hitCorner && Date.now() - lastCornerHit > 4000) {
+                lastCornerHit = Date.now();
+                triggerCornerCelebration();
+            }
+            
+            // Bounce off walls
+            if (clownX <= 0 || clownX >= window.innerWidth - clownSize) {
+                clownSpeedX = -clownSpeedX;
+                clownX = Math.max(0, Math.min(clownX, window.innerWidth - clownSize));
+            }
+            
+            if (clownY <= 0 || clownY >= window.innerHeight - clownSize) {
+                clownSpeedY = -clownSpeedY;
+                clownY = Math.max(0, Math.min(clownY, window.innerHeight - clownSize));
+            }
+            
+            clown.style.left = clownX + 'px';
+            clown.style.top = clownY + 'px';
+            clown.style.transform = `rotate(${clownRotation}deg)`;
+            
+            requestAnimationFrame(animateClown);
+        }
+        
+        function triggerCornerCelebration() {
+            // Show corner hit message
+            cornerHit.classList.add('show');
+            setTimeout(() => {
+                cornerHit.classList.remove('show');
+            }, 2500);
+            
+            // Massive confetti explosion
+            createConfetti();
+            
+            // Money rain
+            createMoneyRain();
+            
+            // Flash/invert colors
+            flashColors();
+        }
+        
+        function createConfetti() {
+            const confettiEmojis = ['🎉', '🎊', '✨', '⭐', '🌟', '💫', '🎈', '🎆', '🎇'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.textContent = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-50px';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+        
+        function createMoneyRain() {
+            const moneyEmojis = ['💵', '💴', '💶', '💷', '💰', '🤑', '💸'];
+            
+            for (let i = 0; i < 35; i++) {
+                setTimeout(() => {
+                    const money = document.createElement('div');
+                    money.className = 'money';
+                    money.textContent = moneyEmojis[Math.floor(Math.random() * moneyEmojis.length)];
+                    money.style.left = Math.random() * 100 + '%';
+                    money.style.top = '-50px';
+                    money.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
+                    document.body.appendChild(money);
+                    
+                    setTimeout(() => money.remove(), 5000);
+                }, i * 40);
+            }
+        }
+        
+        function flashColors() {
+            let flashCount = 0;
+            const totalFlashes = 10;
+            
+            const flashInterval = setInterval(() => {
+                document.body.classList.toggle('invert');
+                flashCount++;
+                
+                if (flashCount >= totalFlashes) {
+                    clearInterval(flashInterval);
+                    document.body.classList.remove('invert');
+                }
+            }, 120);
+        }
+        
+        window.addEventListener('resize', () => {
+            clownX = Math.min(clownX, window.innerWidth - clownSize);
+            clownY = Math.min(clownY, window.innerHeight - clownSize);
+        });
+        
+        animateClown();
         
         async function loadData() {
             try {
