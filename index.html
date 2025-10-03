@@ -1013,7 +1013,7 @@
         }
         
         async function deleteSpin(index) {
-            if (!confirm('Delete this spin from history?')) return;
+            
             
             try {
                 const response = await fetch('/api/admin/delete-spin', {
@@ -1035,7 +1035,7 @@
         }
         
         async function clearAllSpinHistory() {
-            if (!confirm('Clear ALL spin history? This cannot be undone!')) return;
+            
             
             try {
                 const response = await fetch('/api/admin/clear-spins', {
