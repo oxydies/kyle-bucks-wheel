@@ -52,6 +52,21 @@ export default async function handler(req, res) {
     const prizeIndex = Math.floor(Math.random() * prizes.length);
     const prize = prizes[prizeIndex];
     
+    // Log this spin to recent_spins
+    const spinsJson = await client.get('recent_spins');
+    const recentSpins = spinsJson ? JSON.parse(spinsJson) : [];
+    
+    // Add new spin to the beginning
+    recentSpins.unshift({
+      name: name,
+      prize: prize,
+      timestamp: Date.now()
+    });
+    
+    // Keep only last 20 spins
+    const trimmedSpins = recentSpins.slice(0, 20);
+    await client.set('recent_spins', JSON.stringify(trimmedSpins));
+    
     res.status(200).json({ 
       success: true,
       prize,
