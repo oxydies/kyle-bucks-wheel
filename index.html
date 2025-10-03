@@ -183,6 +183,82 @@
             font-weight: 600;
             display: none;
         }
+        
+        .certificate {
+            background: linear-gradient(135deg, #fff9e6 0%, #fffef0 100%);
+            border: 8px double #d4af37;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .certificate::before {
+            content: '🏆';
+            font-size: 60px;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .certificate h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5em;
+            color: #d4af37;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .certificate .recipient {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        
+        .certificate .award-text {
+            font-size: 1.2em;
+            color: #666;
+            margin: 15px 0;
+        }
+        
+        .certificate .prize-text {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+        }
+        
+        .certificate .signature {
+            margin-top: 40px;
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.5em;
+            color: #333;
+        }
+        
+        .certificate .date {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .download-cert-btn {
+            background: #d4af37 !important;
+            margin-top: 15px;
+        }
+        
+        .download-cert-btn:hover {
+            background: #c19b2b !important;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -323,6 +399,27 @@
             </div>
             
             <div class="result" id="result"></div>
+        </div>
+    </div>
+    
+    <!-- Certificate Modal -->
+    <div id="certificateModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-btn" onclick="closeModal('certificateModal')">&times;</span>
+            <div id="certificateContent" class="certificate">
+                <h2>OFFICIAL CERTIFICATE OF WINNING</h2>
+                <div class="award-text">This certifies that</div>
+                <div class="recipient" id="certName">WINNER NAME</div>
+                <div class="award-text">has been awarded the prestigious honor of receiving</div>
+                <div class="prize-text" id="certPrize">AMAZING PRIZE</div>
+                <div class="award-text">through the Kyle Bucks Wheel of Fortune</div>
+                <div class="signature">~ Kyle (Supreme Chancellor of Kyle Bucks) ~</div>
+                <div class="date" id="certDate">Date</div>
+            </div>
+            <button class="download-cert-btn" onclick="downloadCertificate()">📥 Download Certificate</button>
+            <p style="text-align: center; margin-top: 10px; color: #999; font-size: 14px;">
+                Right-click the certificate and "Save Image" or take a screenshot!
+            </p>
         </div>
     </div>
     
@@ -565,6 +662,7 @@
         let prizes = [];
         let players = {};
         let currentPlayerName = '';
+        let currentPrize = '';
         
         async function loadData() {
             try {
@@ -712,6 +810,7 @@
                 }
                 
                 updateBalance(data.newBalance);
+                currentPrize = data.prize;
                 
                 const canvas = document.getElementById('wheelCanvas');
                 const prizeIndex = data.prizeIndex;
@@ -722,10 +821,14 @@
                 canvas.style.transform = `rotate(${targetDegree}deg)`;
                 
                 setTimeout(() => {
-                    document.getElementById('result').innerHTML = `🎉 YOU WON:<br>"${data.prize}" 🎉`;
+                    document.getElementById('result').innerHTML = `
+                        🎉 YOU WON:<br>"${data.prize}" 🎉<br>
+                        <button onclick="showCertificate()" style="margin-top: 15px; background: #d4af37;">
+                            🏆 View Certificate
+                        </button>
+                    `;
                     document.getElementById('result').style.display = 'block';
                     
-                    // Reload recent spins to show this one
                     loadRecentSpins();
                     
                     canvas.style.transform = 'rotate(0deg)';
@@ -745,7 +848,26 @@
             }
         }
         
-        // Report Issue Functions
+        function showCertificate() {
+            document.getElementById('certName').textContent = currentPlayerName.toUpperCase();
+            document.getElementById('certPrize').textContent = currentPrize;
+            const today = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('certDate').textContent = today;
+            document.getElementById('certificateModal').style.display = 'block';
+        }
+        
+        function downloadCertificate() {
+            // Use html2canvas library for screenshot
+            const cert = document.getElementById('certificateContent');
+            
+            // For now, just tell them to screenshot
+            alert('Take a screenshot of this certificate (Cmd+Shift+4 on Mac, or right-click and Save Image)!');
+        }
+        
         function showReportForm() {
             document.getElementById('reportModal').style.display = 'block';
             document.getElementById('reportFormContent').style.display = 'block';
@@ -768,29 +890,19 @@
             }
             
             try {
-                const response = await fetch('/api/report', {
+                await fetch('/api/report', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        name: name,
-                        lostBucks: lostBucks
-                    })
+                    body: JSON.stringify({ name, lostBucks })
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('reportFormContent').style.display = 'none';
-                    document.getElementById('reportSuccess').classList.remove('hidden');
-                }
             } catch (error) {
                 console.error('Error submitting report:', error);
-                document.getElementById('reportFormContent').style.display = 'none';
-                document.getElementById('reportSuccess').classList.remove('hidden');
             }
+            
+            document.getElementById('reportFormContent').style.display = 'none';
+            document.getElementById('reportSuccess').classList.remove('hidden');
         }
         
-        // Admin functions
         function showAdminLogin() {
             document.getElementById('adminLoginModal').style.display = 'block';
         }
@@ -964,7 +1076,6 @@
         }
         
         loadData();
-        // Refresh recent spins every 30 seconds
         setInterval(loadRecentSpins, 30000);
     </script>
 </body>
