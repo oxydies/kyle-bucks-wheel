@@ -122,7 +122,7 @@
         .container {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px; max-height: 90vh; overflow-y: auto;
             max-width: 800px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -173,14 +173,14 @@
         .total-spins-counter {
             background: linear-gradient(135deg, #ff6b6b 0%, #ffa07a 100%);
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .total-spins-counter h3 {
-            font-family: 'Fredoka', sans-serif; font-weight: 300; letter-spacing: 2px;
+            font-family: 'Fredoka', sans-serif; font-weight: 200; letter-spacing: 2px;
             font-size: 1.5em;
             color: white;
             margin-bottom: 10px;
@@ -188,10 +188,10 @@
         }
         
         .total-spins-counter .count {
-            font-size: 4em;
+            font-size: 3em;
             font-weight: 400;
             color: white;
-            font-family: 'Fredoka', sans-serif; font-weight: 300; letter-spacing: 2px;
+            font-family: 'Fredoka', sans-serif; font-weight: 200; letter-spacing: 2px;
             text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
         }
         
@@ -200,7 +200,7 @@
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 20px;
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
         }
         
@@ -346,7 +346,7 @@
         }
         
         .certificate h2 {
-            font-family: 'Fredoka', sans-serif; font-weight: 300; letter-spacing: 2px;
+            font-family: 'Fredoka', sans-serif; font-weight: 200; letter-spacing: 2px;
             font-size: 2.5em;
             color: #d4af37;
             margin-top: 50px;
@@ -414,14 +414,14 @@
         .modal-content {
             background: white;
             margin: 50px auto;
-            padding: 30px;
+            padding: 20px; max-height: 90vh; overflow-y: auto;
             border-radius: 20px;
             max-width: 650px;
             max-height: 85vh;
             overflow-y: auto;
         }
         .modal-content h2 {
-            font-family: 'Fredoka', sans-serif; font-weight: 300; letter-spacing: 2px;
+            font-family: 'Fredoka', sans-serif; font-weight: 200; letter-spacing: 2px;
             color: #667eea;
             margin-bottom: 20px;
             font-size: 2em;
@@ -489,7 +489,7 @@
         }
         .success-message {
             background: #4ecdc4;
-            padding: 30px;
+            padding: 20px; max-height: 90vh; overflow-y: auto;
             border-radius: 15px;
             text-align: center;
             font-size: 24px;
@@ -583,7 +583,7 @@
             
             <div class="wheel-container">
                 <div class="pointer"></div>
-                <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                <canvas id="wheelCanvas" width="350" height="350"></canvas>
             </div>
             
             <div class="result" id="result"></div>
@@ -1107,9 +1107,9 @@
         function drawWheel() {
             const canvas = document.getElementById('wheelCanvas');
             const ctx = canvas.getContext('2d');
-            const centerX = 200;
-            const centerY = 200;
-            const radius = 190;
+            const centerX = 175;
+            const centerY = 175;
+            const radius = 165;
             
             ctx.clearRect(0, 0, 400, 400);
             
