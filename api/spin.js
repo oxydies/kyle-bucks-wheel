@@ -67,6 +67,12 @@ export default async function handler(req, res) {
     const trimmedSpins = recentSpins.slice(0, 20);
     await client.set('recent_spins', JSON.stringify(trimmedSpins));
     
+    // Increment total spin counter (excluding Kyle and Devin)
+    const nameLower = name.toLowerCase();
+    if (nameLower !== 'kyle' && nameLower !== 'devin') {
+      await client.incr('total_spins_count');
+    }
+    
     res.status(200).json({ 
       success: true,
       prize,
