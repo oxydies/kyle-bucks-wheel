@@ -170,6 +170,31 @@
             margin-bottom: 30px;
         }
         
+        .total-spins-counter {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa07a 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .total-spins-counter h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5em;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+        }
+        
+        .total-spins-counter .count {
+            font-size: 3em;
+            font-weight: 700;
+            color: white;
+            font-family: 'Bangers', cursive;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+        }
+        
         .recent-spins {
             background: #f8f9fa;
             border-radius: 10px;
@@ -529,6 +554,11 @@
         
         <h1>🎰 KYLE BUCKS WHEEL OF FORTUNE! 🎰</h1>
         <p class="subtitle">Spin to win absolutely useless prizes!</p>
+        
+        <div class="total-spins-counter">
+            <h3>🎡 TOTAL SPINS 🎡</h3>
+            <div class="count" id="totalSpinCount">0</div>
+        </div>
         
         <div class="recent-spins" id="recentSpins">
             <h3>📜 Recent Spins</h3>
@@ -955,8 +985,20 @@
                 prizes = data.prizes || [];
                 drawWheel();
                 loadRecentSpins();
+                    loadTotalSpinCount();
+                loadTotalSpinCount();
             } catch (error) {
                 console.error('Error loading data:', error);
+            }
+        }
+        
+        async function loadTotalSpinCount() {
+            try {
+                const response = await fetch("/api/total-spins");
+                const data = await response.json();
+                document.getElementById("totalSpinCount").textContent = data.totalSpins || 0;
+            } catch (error) {
+                console.error("Error loading total spin count:", error);
             }
         }
         
@@ -1179,6 +1221,8 @@
                     document.getElementById('result').style.display = 'block';
                     
                     loadRecentSpins();
+                    loadTotalSpinCount();
+                loadTotalSpinCount();
                     
                     canvas.style.transform = 'rotate(0deg)';
                     canvas.style.transition = 'none';
