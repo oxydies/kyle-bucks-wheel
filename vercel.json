@@ -2,5 +2,11 @@
   "buildCommand": null,
   "devCommand": null,
   "installCommand": "npm install",
-  "framework": null
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/madlib",
+      "destination": "/madlib/index.html"
+    }
+  ]
 }
