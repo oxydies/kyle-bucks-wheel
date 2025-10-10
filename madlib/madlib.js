@@ -4,8 +4,9 @@ console.log('🎭 MADLIB SCRIPT STARTING...');
 let currentPlayerName = '';
 let currentBalance = 0;
 let currentPrompts = [];
+let currentTemplateIndex = 0; // Track which template we're using
 
-// ALL 40 templates matching API
+// ALL 40 templates matching API exactly
 const templates = [
     ['Adjective (ex: sparkly, weird, gigantic)', 'Noun - Plural (ex: staplers, donuts, emails)', 'Verb - Past Tense (ex: exploded, danced, screamed)', 'Profession (ex: astronaut, plumber, CEO)'],
     ['Person\'s Name (ex: Taylor Swift, Elon Musk)', 'Verb ending in -ing (ex: juggling, typing, screaming)', 'Animal (ex: llama, penguin, goldfish)', 'Color (ex: neon pink, muddy brown)'],
@@ -47,17 +48,168 @@ const templates = [
     ['Piece of Clothing (ex: seatbelt, driving gloves)', 'Part of Body (ex: foot, steering hand)', 'Silly Word (ex: zoom-zoom, vroom-vroom)', 'Adjective - Feeling (ex: carsick, exhilarated, lost)'],
     ['Adjective (ex: random, inexplicable, chaotic)', 'Verb - Past Tense (ex: happened, occurred, manifested)', 'Silly Word (ex: shenanigans, tomfoolery, hullabaloo)', 'Interjection (ex: What?!, Huh?!, Seriously?!)'],
     ['Number (ex: forty-two, infinity, zero)', 'Noun - Plural (ex: rubber chickens, fidget spinners)', 'Adverb (ex: spontaneously, mysteriously, hilariously)', 'Color (ex: plaid, transparent, iridescent)'],
-    ['Person\'s Name (ex: Bigfoot, The Tooth Fairy)', 'Animal (ex: confused flamingo, philosophical capybara)', 'Verb ending in -ing (ex: existing, vibing, pondering)', 'Measure of Time (ex: the eternal now, 4:20, tea time)']
+    ['Person\'s Name (ex: Bigfoot, The Tooth Fairy)', 'Animal (ex: confused flamingo, philosophical capybara)', 'Verb ending in -ing (ex: existing, vibing, pondering)', 'Measure of Time (ex: the eternal now, 4:20, tea time)'],
+    ['Adjective - Feeling (ex: bewildered, enlightened, unhinged)', 'Profession (ex: chaos coordinator, professional weirdo)', 'Part of Body (ex: funny bone, third eye, soul)', 'Interjection (ex: Bazinga!, Cowabunga!, Yeet!)']
 ];
 
-function startMadlib(){console.log('▶️ startMadlib() called');const name=document.getElementById('playerName').value.trim();console.log('Name entered:',name);if(!name){alert('Please enter your name!');return}fetch('/api/player?name='+encodeURIComponent(name)).then(response=>response.json()).then(data=>{console.log('Player data:',data);if(!data.exists){alert('Name not found! Talk to Kyle to get some Kyle Bucks first! 💰');return}if(data.balance<20){alert('You need at least 20 Kyle Bucks to play! You have '+data.balance+'. Go spin the wheel!');return}currentPlayerName=name;currentBalance=data.balance;document.getElementById('nameEntry').classList.add('hidden');document.getElementById('balanceSection').classList.remove('hidden');document.getElementById('playerBalance').textContent=currentBalance;loadNewPrompts()}).catch(error=>{console.error('Error:',error);alert('Error checking player. Try again!')})}
+function startMadlib() {
+    console.log('▶️ startMadlib() called');
+    const name = document.getElementById('playerName').value.trim();
+    console.log('Name entered:', name);
+    
+    if (!name) {
+        alert('Please enter your name!');
+        return;
+    }
+    
+    fetch('/api/player?name=' + encodeURIComponent(name))
+        .then(response => response.json())
+        .then(data => {
+            console.log('Player data:', data);
+            
+            if (!data.exists) {
+                alert('Name not found! Talk to Kyle to get some Kyle Bucks first! 💰');
+                return;
+            }
+            
+            if (data.balance < 20) {
+                alert('You need at least 20 Kyle Bucks to play! You have ' + data.balance + '. Go spin the wheel!');
+                return;
+            }
+            
+            currentPlayerName = name;
+            currentBalance = data.balance;
+            
+            document.getElementById('nameEntry').classList.add('hidden');
+            document.getElementById('balanceSection').classList.remove('hidden');
+            document.getElementById('playerBalance').textContent = currentBalance;
+            
+            loadNewPrompts();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error checking player. Try again!');
+        });
+}
 
-function loadNewPrompts(){console.log('📝 Loading new prompts...');currentPrompts=templates[Math.floor(Math.random()*templates.length)];let html='';for(let i=0;i<currentPrompts.length;i++){const prompt=currentPrompts[i];const parts=prompt.split('(ex:');const label=parts[0].trim();const example=parts[1]?parts[1].replace(')','').trim():'';html+='<div class="input-group">';html+='<label>'+label+'</label>';if(example){html+='<div class="example-text">'+example+'</div>'}html+='<input type="text" id="madlib-'+i+'" placeholder="Enter your word...">';html+='</div>'}document.getElementById('madlibInputs').innerHTML=html;document.getElementById('madlibForm').classList.remove('hidden')}
+function loadNewPrompts() {
+    console.log('📝 Loading new prompts...');
+    
+    // Pick random template and store the index
+    currentTemplateIndex = Math.floor(Math.random() * templates.length);
+    currentPrompts = templates[currentTemplateIndex];
+    
+    console.log('Selected template index:', currentTemplateIndex);
+    console.log('Prompts:', currentPrompts);
+    
+    let html = '';
+    for (let i = 0; i < currentPrompts.length; i++) {
+        const prompt = currentPrompts[i];
+        const parts = prompt.split('(ex:');
+        const label = parts[0].trim();
+        const example = parts[1] ? parts[1].replace(')', '').trim() : '';
+        
+        html += '<div class="input-group">';
+        html += '<label>' + label + '</label>';
+        if (example) {
+            html += '<div class="example-text">' + example + '</div>';
+        }
+        html += '<input type="text" id="madlib-' + i + '" placeholder="Enter your word...">';
+        html += '</div>';
+    }
+    
+    document.getElementById('madlibInputs').innerHTML = html;
+    document.getElementById('madlibForm').classList.remove('hidden');
+}
 
-function generateMadlib(){console.log('🎲 Generating madlib...');const words=[];for(let i=0;i<currentPrompts.length;i++){const input=document.getElementById('madlib-'+i);if(!input||!input.value.trim()){alert('Please fill in all the words!');return}words.push(input.value.trim())}console.log('Words:',words);fetch('/api/madlib',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:currentPlayerName,words:words})}).then(response=>response.json()).then(data=>{console.log('Madlib result:',data);if(!data.success){alert(data.error||'Failed to generate story!');return}currentBalance=data.newBalance;document.getElementById('playerBalance').textContent=currentBalance;document.getElementById('madlibStory').innerHTML=data.story;document.getElementById('madlibForm').classList.add('hidden');document.getElementById('madlibResult').classList.remove('hidden')}).catch(error=>{console.error('Error:',error);alert('Error generating story. Try again!')})}
+function generateMadlib() {
+    console.log('🎲 Generating madlib...');
+    const words = [];
+    
+    for (let i = 0; i < currentPrompts.length; i++) {
+        const input = document.getElementById('madlib-' + i);
+        if (!input || !input.value.trim()) {
+            alert('Please fill in all the words!');
+            return;
+        }
+        words.push(input.value.trim());
+    }
+    
+    console.log('Words:', words);
+    console.log('Sending template index:', currentTemplateIndex);
+    
+    fetch('/api/madlib', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            name: currentPlayerName, 
+            words: words,
+            templateIndex: currentTemplateIndex // Send the template index!
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Madlib result:', data);
+        
+        if (!data.success) {
+            alert(data.error || 'Failed to generate story!');
+            return;
+        }
+        
+        currentBalance = data.newBalance;
+        document.getElementById('playerBalance').textContent = currentBalance;
+        document.getElementById('madlibStory').innerHTML = data.story;
+        document.getElementById('madlibForm').classList.add('hidden');
+        document.getElementById('madlibResult').classList.remove('hidden');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error generating story. Try again!');
+    });
+}
 
-function playAgain(){console.log('🔄 Play again clicked');if(currentBalance<20){alert('Not enough Kyle Bucks! You need 20 to play again. You have '+currentBalance+'.');return}document.getElementById('madlibResult').classList.add('hidden');loadNewPrompts()}
+function playAgain() {
+    console.log('🔄 Play again clicked');
+    if (currentBalance < 20) {
+        alert('Not enough Kyle Bucks! You need 20 to play again. You have ' + currentBalance + '.');
+        return;
+    }
+    
+    document.getElementById('madlibResult').classList.add('hidden');
+    loadNewPrompts();
+}
 
-function goBack(){console.log('⬅️ Going back to wheel');window.location.href='/'}
+function goBack() {
+    console.log('⬅️ Going back to wheel');
+    window.location.href = '/';
+}
 
-console.log('🔗 Attaching event listeners...');const startBtn=document.getElementById('startBtn');const generateBtn=document.getElementById('generateBtn');const playAgainBtn=document.getElementById('playAgainBtn');const backBtn=document.getElementById('backBtn');if(startBtn){startBtn.onclick=startMadlib;console.log('✅ Start button listener attached')}if(generateBtn){generateBtn.onclick=generateMadlib;console.log('✅ Generate button listener attached')}if(playAgainBtn){playAgainBtn.onclick=playAgain;console.log('✅ Play again button listener attached')}if(backBtn){backBtn.onclick=goBack;console.log('✅ Back button listener attached')}console.log('✅ MADLIB SCRIPT LOADED SUCCESSFULLY!');
+// Attach event listeners
+console.log('🔗 Attaching event listeners...');
+
+const startBtn = document.getElementById('startBtn');
+const generateBtn = document.getElementById('generateBtn');
+const playAgainBtn = document.getElementById('playAgainBtn');
+const backBtn = document.getElementById('backBtn');
+
+if (startBtn) {
+    startBtn.onclick = startMadlib;
+    console.log('✅ Start button listener attached');
+}
+
+if (generateBtn) {
+    generateBtn.onclick = generateMadlib;
+    console.log('✅ Generate button listener attached');
+}
+
+if (playAgainBtn) {
+    playAgainBtn.onclick = playAgain;
+    console.log('✅ Play again button listener attached');
+}
+
+if (backBtn) {
+    backBtn.onclick = goBack;
+    console.log('✅ Back button listener attached');
+}
+
+console.log('✅ MADLIB SCRIPT LOADED SUCCESSFULLY!');
