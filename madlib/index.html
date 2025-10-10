@@ -196,9 +196,9 @@
         <div id="nameEntry">
             <div class="input-group">
                 <label for="playerName">Enter Your Name:</label>
-                <input type="text" id="playerName" placeholder="Who are you?" onkeypress="if(event.key==='Enter') document.getElementById('startBtn').click()">
+                <input type="text" id="playerName" placeholder="Who are you?">
             </div>
-            <button id="startBtn">Start Game</button>
+            <button type="button" id="startBtn">Start Game</button>
         </div>
         
         <!-- Step 2: Balance Display (hidden initially) -->
@@ -211,108 +211,108 @@
         <!-- Step 3: Madlib Form (hidden initially) -->
         <div id="madlibForm" class="hidden">
             <div class="madlib-input-grid" id="madlibInputs"></div>
-            <button id="generateBtn">🎲 Generate Story (20 Kyle Bucks)</button>
+            <button type="button" id="generateBtn">🎲 Generate Story (20 Kyle Bucks)</button>
         </div>
         
         <!-- Step 4: Story Result (hidden initially) -->
         <div id="madlibResult" class="hidden">
             <div class="madlib-story" id="madlibStory"></div>
             <div class="button-group">
-                <button id="playAgainBtn">🔄 Play Again (20 Kyle Bucks)</button>
-                <button id="backBtn" class="back-button">🎡 Back to Wheel</button>
+                <button type="button" id="playAgainBtn">🔄 Play Again (20 Kyle Bucks)</button>
+                <button type="button" id="backBtn" class="back-button">🎡 Back to Wheel</button>
             </div>
         </div>
     </div>
 
-    <script>
-        let currentPlayerName = '';
-        let currentBalance = 0;
-        let currentPrompts = [];
-        
-        async function startMadlib() {
-            const name = document.getElementById('playerName').value.trim();
-            if (!name) {
-                alert('Please enter your name!');
+<script>
+// Immediately log to console to prove script is running
+console.log('🎭 MADLIB SCRIPT STARTING...');
+
+let currentPlayerName = '';
+let currentBalance = 0;
+let currentPrompts = [];
+
+const templates = [
+    ['Adjective (ex: sparkly, weird, gigantic)', 'Noun - Plural (ex: staplers, donuts, emails)', 'Verb - Past Tense (ex: exploded, danced, screamed)', 'Profession (ex: astronaut, plumber, CEO)'],
+    ['Person\'s Name (ex: Taylor Swift, Elon Musk)', 'Verb ending in -ing (ex: juggling, typing, screaming)', 'Animal (ex: llama, penguin, goldfish)', 'Color (ex: neon pink, muddy brown)'],
+    ['Adjective - Feeling (ex: anxious, thrilled, confused)', 'Part of Body (ex: elbow, left pinky toe)', 'Silly Word (ex: blorp, yeet, flibbertigibbet)', 'Interjection (ex: Yikes!, Holy moly!, Zoinks!)'],
+    ['Number (ex: seventeen, 420, one million)', 'Noun - Plural (ex: coffee mugs, keyboards, chairs)', 'Place (ex: the parking lot, Antarctica, Dave\'s desk)', 'Adverb (ex: mysteriously, frantically, slowly)'],
+    ['Verb - Past Tense (ex: teleported, yodeled, exploded)', 'Animal (ex: ferret, peacock, hamster)', 'Piece of Clothing (ex: tube sock, Hawaiian shirt)', 'Profession (ex: ninja, barista, detective)']
+];
+
+function startMadlib() {
+    console.log('▶️ startMadlib() called');
+    const name = document.getElementById('playerName').value.trim();
+    console.log('Name entered:', name);
+    
+    if (!name) {
+        alert('Please enter your name!');
+        return;
+    }
+    
+    fetch('/api/player?name=' + encodeURIComponent(name))
+        .then(response => response.json())
+        .then(data => {
+            console.log('Player data:', data);
+            
+            if (!data.exists) {
+                alert('Name not found! Talk to Kyle to get some Kyle Bucks first! 💰');
                 return;
             }
             
-            try {
-                const response = await fetch(`/api/player?name=${encodeURIComponent(name)}`);
-                const data = await response.json();
-                
-                if (!data.exists) {
-                    alert('Name not found! Talk to Kyle to get some Kyle Bucks first! 💰');
-                    return;
-                }
-                
-                if (data.balance < 20) {
-                    alert(`You need at least 20 Kyle Bucks to play! You have ${data.balance}. Go spin the wheel!`);
-                    return;
-                }
-                
-                currentPlayerName = name;
-                currentBalance = data.balance;
-                
-                // Hide name entry, show balance and form
-                document.getElementById('nameEntry').classList.add('hidden');
-                document.getElementById('balanceSection').classList.remove('hidden');
-                document.getElementById('playerBalance').textContent = currentBalance;
-                
-                // Load fresh prompts from the server
-                await loadNewPrompts();
-                
-            } catch (error) {
-                console.error('Error checking player:', error);
-                alert('Error checking player. Try again!');
+            if (data.balance < 20) {
+                alert('You need at least 20 Kyle Bucks to play! You have ' + data.balance + '. Go spin the wheel!');
+                return;
             }
-        }
+            
+            currentPlayerName = name;
+            currentBalance = data.balance;
+            
+            document.getElementById('nameEntry').classList.add('hidden');
+            document.getElementById('balanceSection').classList.remove('hidden');
+            document.getElementById('playerBalance').textContent = currentBalance;
+            
+            loadNewPrompts();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error checking player. Try again!');
+        });
+}
+
+function loadNewPrompts() {
+    console.log('📝 Loading new prompts...');
+    currentPrompts = templates[Math.floor(Math.random() * templates.length)];
+    
+    let html = '';
+    for (let i = 0; i < currentPrompts.length; i++) {
+        const prompt = currentPrompts[i];
+        const parts = prompt.split('(ex:');
+        const label = parts[0].trim();
+        const example = parts[1] ? parts[1].replace(')', '').trim() : '';
         
-        async function loadNewPrompts() {
-            // Make a dummy call to get a random set of prompts
-            // We'll send empty data just to get the prompts
-            try {
-                // First, fetch prompts by trying to generate with minimal data
-                // The API will return the prompts it's using
-                // For now, we'll use client-side prompt generation
-                
-                // Generate prompts from our templates (we'll inline a few examples)
-                const templates = [
-                    ['Adjective (ex: sparkly, weird, gigantic)', 'Noun - Plural (ex: staplers, donuts, emails)', 'Verb - Past Tense (ex: exploded, danced, screamed)', 'Profession (ex: astronaut, plumber, CEO)'],
-                    ['Person\'s Name (ex: Taylor Swift, Elon Musk)', 'Verb ending in -ing (ex: juggling, typing, screaming)', 'Animal (ex: llama, penguin, goldfish)', 'Color (ex: neon pink, muddy brown)'],
-                    ['Adjective - Feeling (ex: anxious, thrilled, confused)', 'Part of Body (ex: elbow, left pinky toe)', 'Silly Word (ex: blorp, yeet, flibbertigibbet)', 'Interjection (ex: Yikes!, Holy moly!, Zoinks!)'],
-                    ['Number (ex: seventeen, 420, one million)', 'Noun - Plural (ex: coffee mugs, keyboards, chairs)', 'Place (ex: the parking lot, Antarctica, Dave\'s desk)', 'Adverb (ex: mysteriously, frantically, slowly)'],
-                    ['Verb - Past Tense (ex: teleported, yodeled, exploded)', 'Animal (ex: ferret, peacock, hamster)', 'Piece of Clothing (ex: tube sock, Hawaiian shirt)', 'Profession (ex: ninja, barista, detective)'],
-                    ['Adjective (ex: mystical, haunted, legendary)', 'Place (ex: Mount Everest, the supply closet)', 'Person\'s Name (ex: Gandalf, Oprah, Batman)', 'Silly Word (ex: ka-chow, bazinga, booyah)'],
-                    ['Measure of Time (ex: eons, 47 minutes, centuries)', 'Verb ending in -ing (ex: meditating, breakdancing)', 'Color (ex: electric purple, seafoam green)', 'Number (ex: twelve, 666, ninety-nine)'],
-                    ['Adjective - Feeling (ex: enlightened, pumped, terrified)', 'Animal (ex: wise owl, confused sloth)', 'Interjection (ex: Eureka!, Bingo!, Sweet!)', 'Verb - Past Tense (ex: transcended, vibed, awakened)'],
-                    ['Adjective (ex: impossible, ridiculous, epic)', 'Noun - Plural (ex: rubber ducks, Post-it notes)', 'Place (ex: the roof, behind the fridge)', 'Profession (ex: wizard, crossing guard, DJ)'],
-                    ['Person\'s Name (ex: Gordon Ramsay, Beyoncé)', 'Verb ending in -ing (ex: backflipping, solving)', 'Animal (ex: majestic eagle, grumpy cat)', 'Silly Word (ex: whammy, kaboom, schwing)']
-                ];
-                
-                currentPrompts = templates[Math.floor(Math.random() * templates.length)];
-                
-                const inputsHtml = currentPrompts.map((prompt, i) => {
-                    return `
-                        <div class="input-group">
-                            <label>${prompt.split('(ex:')[0].trim()}</label>
-                            ${prompt.includes('(ex:') ? '<div class="example-text">' + prompt.split('(ex:')[1].replace(')', '') + '</div>' : ''}
-                            <input type="text" id="madlib-${i}" required placeholder="Enter your word...">
-                        </div>
-                    `;
-                }).join('');
-                
-                document.getElementById('madlibInputs').innerHTML = inputsHtml;
-                document.getElementById('madlibForm').classList.remove('hidden');
-                
-            } catch (error) {
-                console.error('Error loading prompts:', error);
-            }
+        html += '<div class="input-group">';
+        html += '<label>' + label + '</label>';
+        if (example) {
+            html += '<div class="example-text">' + example + '</div>';
         }
-        
-        async function generateMadlib() {
-            // Collect all words
-            const words = [];
-            for (let i = 0; i < currentPrompts.length; i++) {
-                const input = document.getElementById(`madlib-${i}`);
-                if (!input || !input.value.trim()) {
-                    alert('Please fill in all the words!');
+        html += '<input type="text" id="madlib-' + i + '" placeholder="Enter your word...">';
+        html += '</div>';
+    }
+    
+    document.getElementById('madlibInputs').innerHTML = html;
+    document.getElementById('madlibForm').classList.remove('hidden');
+}
+
+function generateMadlib() {
+    console.log('🎲 Generating madlib...');
+    const words = [];
+    
+    for (let i = 0; i < currentPrompts.length; i++) {
+        const input = document.getElementById('madlib-' + i);
+        if (!input || !input.value.trim()) {
+            alert('Please fill in all the words!');
+            return;
+        }
+        words.push(input.value.trim());
+    }
