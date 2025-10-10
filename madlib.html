@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Kyle Bucks Madlib Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #764ba2;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .cost {
+            text-align: center;
+            background: #ffe66d;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 2px dashed #667eea;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .input-group { 
+            margin-bottom: 15px; 
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Fredoka', sans-serif;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover:not(:disabled) { background: #5568d3; }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .madlib-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 600px) {
+            .madlib-input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .madlib-story {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+            margin: 20px 0;
+            border: 3px solid #667eea;
+            min-height: 150px;
+        }
+        
+        .balance-display {
+            background: #ffe66d;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 15px 0;
+            border: 3px dashed #667eea;
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Wheel</a>
+        
+        <h1>🎭 SECRET MADLIB GAME 🎭</h1>
+        <p class="subtitle">Create hilarious stories about office life!</p>
+        <div class="cost">Costs 10 Kyle Bucks per story</div>
+        
+        <!-- Step 1: Enter Name -->
+        <div id="nameEntry">
+            <div class="input-group">
+                <label for="playerName">Enter Your Name:</label>
+                <input type="text" id="playerName" placeholder="Who are you?">
+            </div>
+            <button onclick="startMadlib()">Start Game</button>
+        </div>
+        
+        <!-- Step 2: Balance Display (hidden initially) -->
+        <div id="balanceSection" class="hidden">
+            <div class="balance-display">
+                💰 <span id="playerBalance">0</span> Kyle Bucks 💰
+            </div>
+        </div>
+        
+        <!-- Step 3: Madlib Form (hidden initially) -->
+        <div id="madlibForm" class="hidden">
+            <div class="madlib-input-grid" id="madlibInputs"></div>
+            <button onclick="generateMadlib()">🎲 Generate Story (10 Kyle Bucks)</button>
+        </div>
+        
+        <!-- Step 4: Story Result (hidden initially) -->
+        <div id="madlibResult" class="hidden">
+            <div class="madlib-story" id="madlibStory"></div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="playAgain()">🔄 Play Again (10 Kyle Bucks)</button>
+                <button onclick="location.href='/'" style="background: #4ecdc4;">🎡 Back to Wheel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlayerName = '';
+        let currentBalance = 0;
+        let currentPrompts = [];
+        
+        // 30 different madlib templates (simplified versions - full set in API)
+        const promptSets = [
+            ['adjective', 'noun', 'verb (past tense)', 'place', 'food', 'number'],
+            ['emotion', 'verb ending in -ing', 'object', 'place', 'sound', 'adjective'],
+            ['color', 'animal', 'verb ending in -ing', 'noun', 'adjective', 'vehicle'],
+            ['adjective', 'body part', 'verb', 'animal', 'liquid', 'celebrity'],
+            ['weather', 'emotion', 'verb', 'object', 'adjective', 'location'],
+            ['type of dance', 'adjective', 'food', 'mythical creature', 'verb', 'time period'],
+            ['adjective', 'office supply', 'verb', 'number', 'sound', 'celebrity'],
+            ['verb', 'adjective', 'household item', 'emotion', 'color', 'place'],
+            ['type of music', 'adjective', 'verb', 'food', 'celebrity', 'object'],
+            ['adjective', 'musical instrument', 'verb', 'animal', 'food', 'number']
+        ];
+        
+        async function startMadlib() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('Please enter your name!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/player?name=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                
+                if (!data.exists) {
+                    alert('Name not found! Talk to Kyle to get some Kyle Bucks first! 💰');
+                    return;
+                }
+                
+                if (data.balance < 10) {
+                    alert('You need at least 10 Kyle Bucks to play! Go spin the wheel!');
+                    return;
+                }
+                
+                currentPlayerName = name;
+                currentBalance = data.balance;
+                
+                // Hide name entry, show balance and form
+                document.getElementById('nameEntry').classList.add('hidden');
+                document.getElementById('balanceSection').classList.remove('hidden');
+                document.getElementById('playerBalance').textContent = currentBalance;
+                
+                // Generate random prompts
+                currentPrompts = promptSets[Math.floor(Math.random() * promptSets.length)];
+                
+                const inputsHtml = currentPrompts.map((prompt, i) => `
+                    <div class="input-group">
+                        <label>${prompt}</label>
+                        <input type="text" id="madlib-${i}" required>
+                    </div>
+                `).join('');
+                
+                document.getElementById('madlibInputs').innerHTML = inputsHtml;
+                document.getElementById('madlibForm').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error checking player:', error);
+                alert('Error checking player. Try again!');
+            }
+        }
+        
+        async function generateMadlib() {
+            // Collect all words
+            const words = [];
+            for (let i = 0; i < currentPrompts.length; i++) {
+                const input = document.getElementById(`madlib-${i}`);
+                if (!input || !input.value.trim()) {
+                    alert('Please fill in all the words!');
+                    return;
+                }
+                words.push(input.value.trim());
+            }
+            
+            try {
+                const response = await fetch('/api/madlib', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: currentPlayerName, words })
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    alert(data.error || 'Failed to generate story!');
+                    return;
+                }
+                
+                // Update balance
+                currentBalance = data.newBalance;
+                document.getElementById('playerBalance').textContent = currentBalance;
+                
+                // Show the story
+                document.getElementById('madlibStory').innerHTML = data.story;
+                document.getElementById('madlibForm').classList.add('hidden');
+                document.getElementById('madlibResult').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error generating madlib:', error);
+                alert('Error generating story. Try again!');
+            }
+        }
+        
+        function playAgain() {
+            if (currentBalance < 10) {
+                alert('Not enough Kyle Bucks! You need 10 to play again.');
+                return;
+            }
+            
+            // Reset to form
+            document.getElementById('madlibResult').classList.add('hidden');
+            
+            // Generate new random prompts
+            currentPrompts = promptSets[Math.floor(Math.random() * promptSets.length)];
+            
+            const inputsHtml = currentPrompts.map((prompt, i) => `
+                <div class="input-group">
+                    <label>${prompt}</label>
+                    <input type="text" id="madlib-${i}" required>
+                </div>
+            `).join('');
+            
+            document.getElementById('madlibInputs').innerHTML = inputsHtml;
+            document.getElementById('madlibForm').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
