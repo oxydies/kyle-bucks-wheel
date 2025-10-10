@@ -1,170 +1,67 @@
-# 🎰 Kyle Bucks Wheel of Fortune
+# 🎰 Kyle Bucks Wheel of Fortune - READY TO DEPLOY
 
-A fun spinning wheel app for awarding nonsense prizes with Kyle Bucks!
+This folder contains the complete, ready-to-deploy Kyle Bucks application.
 
-## Features
-- 🎡 Spinning wheel with 25 customizable prizes
-- 💰 Player balance tracking (20 Kyle Bucks per spin)
-- 👑 Admin panel to manage prizes and player balances
-- 🔒 Password-protected admin access
-- ☁️ Cloud database with Vercel KV (Redis)
+## ✅ What's Included
 
-## Admin Password
-`kylebucks2025`
+**Root Files:**
+- index.html - Main wheel page
+- madlib.html - Secret madlib game page
+- package.json - Dependencies
+- vercel.json - Vercel config
+- .gitignore - Git ignore file
 
-## Deployment Instructions
+**API Files (8 total - under the 12 function limit):**
+- api/admin.js - Combined admin endpoint (login, data, prizes, players, delete/clear spins)
+- api/data.js - Get prizes
+- api/player.js - Check player balance
+- api/spin.js - Handle wheel spins
+- api/recent-spins.js - Get recent spin history
+- api/total-spins.js - Get total spin count (excludes Kyle & Devin)
+- api/madlib.js - Madlib game with 30 story templates
+- api/report.js - Email complaints to kyle.allen@ncino.com
 
-### Prerequisites
-1. Create a free account at [Vercel.com](https://vercel.com)
-2. Install Vercel CLI (optional but recommended):
-   ```bash
-   npm install -g vercel
-   ```
+## 🚀 Deployment Instructions
 
-### Method 1: Deploy via GitHub (Recommended)
+### Option 1: Replace Everything on GitHub
 
-1. **Create a GitHub repository:**
-   - Go to [GitHub.com](https://github.com) and create a new repository
-   - Upload all the files from this project
+1. Go to your GitHub repo: https://github.com/oxydies/kyle-bucks-wheel
+2. Delete ALL files (except maybe README.md if you want to keep it)
+3. Upload ALL files from this kyle-bucks-DEPLOY folder
+4. Vercel will auto-deploy
 
-2. **Connect to Vercel:**
-   - Go to [vercel.com/new](https://vercel.com/new)
-   - Click "Import Project"
-   - Select your GitHub repository
-   - Click "Deploy"
+### Option 2: Fresh Start
 
-3. **Add Vercel KV Storage:**
-   - After deployment, go to your project dashboard on Vercel
-   - Click on the "Storage" tab
-   - Click "Create Database"
-   - Select "KV" (Redis)
-   - Give it a name like "kyle-bucks-db"
-   - Click "Create"
-   - Vercel will automatically connect it to your project
+1. Delete the old repo entirely
+2. Create new repo: kyle-bucks-wheel
+3. Upload all files from this folder
+4. Connect to Vercel
+5. Add Vercel KV database
+6. Add environment variables
 
-4. **Done!** Your app is now live at `https://your-project.vercel.app`
+## 🔑 Required Environment Variables in Vercel
 
-### Method 2: Deploy via Vercel CLI
+- `REDIS_URL` - From your Vercel KV database (should already exist)
+- `RESEND_API_KEY` - From resend.com for email reports (optional)
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## 🎮 Features
 
-2. **Login to Vercel:**
-   ```bash
-   vercel login
-   ```
+- Spinning wheel with unlimited prizes
+- Player balance tracking
+- Bouncing clown background (corner hits = confetti + money)
+- Recent spins feed
+- Total spins counter ("Dreams Made Reality")
+- Prize certificates
+- 25-question complaint form
+- Admin panel (password: kylebucks2025)
+- **SECRET: Type "MADLIB" as name to play madlib game (10 Kyle Bucks)**
 
-3. **Deploy:**
-   ```bash
-   vercel
-   ```
-   - Follow the prompts
-   - Choose "yes" to link to existing project or create new one
+## 📝 Notes
 
-4. **Add Vercel KV:**
-   - Go to your project on vercel.com
-   - Follow step 3 from Method 1 above
+- Total spin counter excludes "Kyle" and "Devin"
+- All admin functions combined into single API endpoint
+- 8 serverless functions total (under free tier limit of 12)
 
-5. **Redeploy with storage:**
-   ```bash
-   vercel --prod
-   ```
+## 🎉 You're Ready!
 
-### Method 3: Drag & Drop (Easiest but Limited)
-
-1. Go to [vercel.com/new](https://vercel.com/new)
-2. Drag and drop the entire project folder
-3. Add KV storage (see step 3 from Method 1)
-4. Redeploy from the Vercel dashboard
-
-## Important: Setting Up Vercel KV
-
-**YOU MUST ADD VERCEL KV STORAGE** or the app won't work! Here's why:
-- The app stores all prizes and player balances in Vercel KV (Redis)
-- Without it, the API endpoints will fail
-
-**To add KV after deployment:**
-1. Go to your project on vercel.com
-2. Click "Storage" tab
-3. Click "Create Database"
-4. Choose "KV"
-5. Name it (e.g., "kyle-bucks-db")
-6. Click "Create"
-7. Vercel automatically redeploys with the database connected
-
-## Usage
-
-### For Players:
-1. Go to the URL (e.g., `https://kyle-bucks.vercel.app`)
-2. Enter your name
-3. Check your balance
-4. Spin if you have 20+ Kyle Bucks!
-
-### For Admin (You):
-1. Click the "👑 Admin" button
-2. Enter password: `kylebucks2025`
-3. Edit prizes (25 slots)
-4. Add new players with Kyle Buck balances
-5. Adjust existing player balances
-6. Save changes
-
-## Customization
-
-### Change Admin Password
-Edit `/api/admin/login.js`:
-```javascript
-const ADMIN_PASSWORD = 'your-new-password-here';
-```
-
-### Change Spin Cost
-Currently set to 20 Kyle Bucks. To change:
-1. Edit `index.html` - change the button text
-2. Edit `api/spin.js` - change `if (players[name] < 20)` and `players[name] -= 20`
-
-## File Structure
-```
-kyle-bucks-app/
-├── index.html              # Main app interface
-├── package.json            # Dependencies
-├── api/
-│   ├── data.js            # Get prizes
-│   ├── player.js          # Check player balance
-│   ├── spin.js            # Handle wheel spin
-│   └── admin/
-│       ├── login.js       # Admin authentication
-│       ├── data.js        # Get all admin data
-│       ├── prizes.js      # Update prizes
-│       └── players.js     # Update players
-└── README.md              # This file
-```
-
-## Tech Stack
-- **Frontend:** Vanilla JavaScript, HTML5 Canvas
-- **Backend:** Vercel Serverless Functions (Node.js)
-- **Database:** Vercel KV (Redis)
-- **Hosting:** Vercel
-
-## Troubleshooting
-
-### "Failed to fetch data" error
-- Make sure Vercel KV is set up (see "Setting Up Vercel KV" above)
-- Check that the KV database is linked to your project
-
-### Players can't see their balance
-- Make sure you've added them in the Admin panel
-- Check the browser console for errors
-
-### Wheel not spinning
-- Make sure prizes are loaded (check browser console)
-- Refresh the page
-
-## Support
-If you run into issues, check:
-1. Vercel deployment logs (in your Vercel dashboard)
-2. Browser console (F12 > Console tab)
-3. Make sure KV storage is connected
-
-## License
-MIT - Have fun! 🎉
+Just upload these files to GitHub and you're good to go!
