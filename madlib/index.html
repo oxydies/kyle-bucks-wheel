@@ -196,9 +196,9 @@
         <div id="nameEntry">
             <div class="input-group">
                 <label for="playerName">Enter Your Name:</label>
-                <input type="text" id="playerName" placeholder="Who are you?">
+                <input type="text" id="playerName" placeholder="Who are you?" onkeypress="if(event.key==='Enter') document.getElementById('startBtn').click()">
             </div>
-            <button onclick="startMadlib()">Start Game</button>
+            <button id="startBtn">Start Game</button>
         </div>
         
         <!-- Step 2: Balance Display (hidden initially) -->
@@ -211,15 +211,15 @@
         <!-- Step 3: Madlib Form (hidden initially) -->
         <div id="madlibForm" class="hidden">
             <div class="madlib-input-grid" id="madlibInputs"></div>
-            <button onclick="generateMadlib()">🎲 Generate Story (20 Kyle Bucks)</button>
+            <button id="generateBtn">🎲 Generate Story (20 Kyle Bucks)</button>
         </div>
         
         <!-- Step 4: Story Result (hidden initially) -->
         <div id="madlibResult" class="hidden">
             <div class="madlib-story" id="madlibStory"></div>
             <div class="button-group">
-                <button onclick="playAgain()">🔄 Play Again (20 Kyle Bucks)</button>
-                <button onclick="location.href='/'" class="back-button">🎡 Back to Wheel</button>
+                <button id="playAgainBtn">🔄 Play Again (20 Kyle Bucks)</button>
+                <button id="backBtn" class="back-button">🎡 Back to Wheel</button>
             </div>
         </div>
     </div>
