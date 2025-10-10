@@ -1,67 +1,45 @@
-# 🎰 Kyle Bucks Wheel of Fortune - READY TO DEPLOY
+# 🎰 Kyle Bucks Wheel - Ready to Deploy
 
-This folder contains the complete, ready-to-deploy Kyle Bucks application.
+Complete, working version with all features.
 
-## ✅ What's Included
+## 📁 Files in This Folder
 
-**Root Files:**
-- index.html - Main wheel page
-- madlib.html - Secret madlib game page
-- package.json - Dependencies
-- vercel.json - Vercel config
-- .gitignore - Git ignore file
+✅ index.html - Main wheel page  
+✅ madlib.html - Secret madlib game  
+✅ package.json  
+✅ vercel.json  
+✅ .gitignore  
+✅ api/ folder with 8 functions (under limit)
 
-**API Files (8 total - under the 12 function limit):**
-- api/admin.js - Combined admin endpoint (login, data, prizes, players, delete/clear spins)
-- api/data.js - Get prizes
-- api/player.js - Check player balance
-- api/spin.js - Handle wheel spins
-- api/recent-spins.js - Get recent spin history
-- api/total-spins.js - Get total spin count (excludes Kyle & Devin)
-- api/madlib.js - Madlib game with 30 story templates
-- api/report.js - Email complaints to kyle.allen@ncino.com
+## 🚀 Deploy Instructions
 
-## 🚀 Deployment Instructions
+**Delete old repo and start fresh:**
 
-### Option 1: Replace Everything on GitHub
-
-1. Go to your GitHub repo: https://github.com/oxydies/kyle-bucks-wheel
-2. Delete ALL files (except maybe README.md if you want to keep it)
-3. Upload ALL files from this kyle-bucks-DEPLOY folder
-4. Vercel will auto-deploy
-
-### Option 2: Fresh Start
-
-1. Delete the old repo entirely
+1. Go to GitHub → Settings → Delete repository
 2. Create new repo: kyle-bucks-wheel
-3. Upload all files from this folder
-4. Connect to Vercel
-5. Add Vercel KV database
-6. Add environment variables
-
-## 🔑 Required Environment Variables in Vercel
-
-- `REDIS_URL` - From your Vercel KV database (should already exist)
-- `RESEND_API_KEY` - From resend.com for email reports (optional)
+3. Upload ALL files from this folder
+4. Go to Vercel → Import GitHub repo
+5. Deploy
+6. Add Vercel KV database (Storage tab)
+7. Add REDIS_URL environment variable
 
 ## 🎮 Features
 
-- Spinning wheel with unlimited prizes
-- Player balance tracking
-- Bouncing clown background (corner hits = confetti + money)
+- Spinning wheel
+- Total spins counter ("Dreams Made Reality") - excludes Kyle & Devin
 - Recent spins feed
-- Total spins counter ("Dreams Made Reality")
+- Bouncing clown (corner hits = confetti + money)
 - Prize certificates
-- 25-question complaint form
+- Complaint form (emails kyle.allen@ncino.com)
 - Admin panel (password: kylebucks2025)
-- **SECRET: Type "MADLIB" as name to play madlib game (10 Kyle Bucks)**
+- **SECRET: Type "madlib" to unlock madlib game**
 
-## 📝 Notes
+## 📝 Admin Password
 
-- Total spin counter excludes "Kyle" and "Devin"
-- All admin functions combined into single API endpoint
-- 8 serverless functions total (under free tier limit of 12)
+kylebucks2025
 
-## 🎉 You're Ready!
+## ⚠️ Important
 
-Just upload these files to GitHub and you're good to go!
+This folder has CLEAN files ready to deploy. The kyle-bucks-app folder may have broken files from testing.
+
+USE THIS FOLDER to deploy!
