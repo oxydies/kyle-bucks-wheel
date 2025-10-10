@@ -9,342 +9,410 @@ function getRedis() {
   return redis;
 }
 
-// 40 completely verified madlib templates with variety
+// 40 madlib templates with varied word types and examples
 const storyTemplates = [
-  // Office chaos stories
+  // Office chaos
   {
-    prompts: ['adjective', 'noun', 'verb (past tense)', 'place in office', 'food', 'number'],
-    story: (words) => `The ${words[0]} incident happened when Kyle ${words[2]} a ${words[1]} in the ${words[3]}. There were ${words[5]} pieces of ${words[4]} everywhere. HR is still investigating.`
+    prompts: [
+      'Adjective (ex: sparkly, weird, gigantic)',
+      'Noun - Plural (ex: staplers, donuts, emails)',
+      'Verb - Past Tense (ex: exploded, danced, screamed)',
+      'Profession (ex: astronaut, plumber, CEO)'
+    ],
+    story: (w) => `The ${w[0]} Monday started when ${w[1]} mysteriously ${w[2]} in the break room. A visiting ${w[3]} had to help clean up. Kyle gave everyone bonus bucks for surviving.`
   },
   {
-    prompts: ['emotion', 'verb ending in -ing', 'office supply', 'celebrity', 'adjective', 'liquid'],
-    story: (words) => `I felt ${words[0]} while ${words[1]} with the ${words[2]}. ${words[3]} walked by and spilled ${words[4]} ${words[5]} on my desk. Just another day at the office.`
+    prompts: [
+      'Person\'s Name (ex: Taylor Swift, Elon Musk)',
+      'Verb ending in -ing (ex: juggling, typing, screaming)',
+      'Animal (ex: llama, penguin, goldfish)',
+      'Color (ex: neon pink, muddy brown)'
+    ],
+    story: (w) => `${w[0]} showed up at work today, ${w[1]} while riding a ${w[2]}. Everything turned ${w[3]} for some reason. Kyle Bucks were distributed as hush money.`
   },
   {
-    prompts: ['adjective', 'body part', 'verb (past tense)', 'animal', 'number', 'place'],
-    story: (words) => `My ${words[0]} ${words[1]} ${words[2]} when I saw a ${words[3]} in ${words[5]}. I counted to ${words[4]} and decided I deserved Kyle Bucks for witnessing this.`
+    prompts: [
+      'Adjective - Feeling (ex: anxious, thrilled, confused)',
+      'Part of Body (ex: elbow, left pinky toe)',
+      'Silly Word (ex: blorp, yeet, flibbertigibbet)',
+      'Interjection (ex: Yikes!, Holy moly!, Zoinks!)'
+    ],
+    story: (w) => `I felt ${w[0]} when I accidentally hit my ${w[1]} on the ${w[2]} machine. "${w[3]}" I yelled. Kyle heard and gave me sympathy bucks immediately.`
   },
   {
-    prompts: ['type of food', 'adjective', 'verb', 'coworker name', 'emotion', 'time of day'],
-    story: (words) => `At ${words[5]}, I tried to ${words[2]} some ${words[0]}. It was too ${words[1]} and made ${words[3]} feel ${words[4]}. Kyle awarded me sympathy bucks.`
-  },
-  
-  // Kyle origin stories
-  {
-    prompts: ['adjective', 'place', 'verb (past tense)', 'magical object', 'number', 'animal'],
-    story: (words) => `Legend says Kyle discovered the Kyle Buck system in a ${words[0]} ${words[1]} where he ${words[2]} a ${words[3]}. ${words[4]} ${words[5]}s appeared and the rest is history.`
-  },
-  {
-    prompts: ['verb', 'adjective', 'noun', 'celebrity', 'emotion', 'number'],
-    story: (words) => `Kyle learned to ${words[0]} from ${words[3]} who gave him a ${words[1]} ${words[2]}. He felt ${words[4]} and created ${words[5]} Kyle Bucks on the spot.`
+    prompts: [
+      'Number (ex: seventeen, 420, one million)',
+      'Noun - Plural (ex: coffee mugs, keyboards, chairs)',
+      'Place (ex: the parking lot, Antarctica, Dave\'s desk)',
+      'Adverb (ex: mysteriously, frantically, slowly)'
+    ],
+    story: (w) => `There were ${w[0]} ${w[1]} scattered across ${w[2]}. They appeared ${w[3]} overnight. HR investigated but Kyle just gave out bucks and moved on.`
   },
   {
-    prompts: ['adjective', 'type of weather', 'verb (past tense)', 'object', 'place', 'sound'],
-    story: (words) => `On a ${words[0]}, ${words[1]} day, Kyle ${words[2]} a ${words[3]} at ${words[4]}. It made a "${words[5]}" noise and Kyle Bucks were born.`
+    prompts: [
+      'Verb - Past Tense (ex: teleported, yodeled, exploded)',
+      'Animal (ex: ferret, peacock, hamster)',
+      'Piece of Clothing (ex: tube sock, Hawaiian shirt)',
+      'Profession (ex: ninja, barista, detective)'
+    ],
+    story: (w) => `The office ${w[3]} ${w[0]} when they saw a ${w[1]} wearing a ${w[2]} in the conference room. Kyle declared it the best day ever and made it rain bucks.`
   },
-  
+
+  // Kyle Bucks legends
+  {
+    prompts: [
+      'Adjective (ex: mystical, haunted, legendary)',
+      'Place (ex: Mount Everest, the supply closet)',
+      'Person\'s Name (ex: Gandalf, Oprah, Batman)',
+      'Silly Word (ex: ka-chow, bazinga, booyah)'
+    ],
+    story: (w) => `Legend says Kyle discovered the ${w[0]} power of Kyle Bucks at ${w[1]}. ${w[2]} appeared in a vision and said "${w[3]}" and the currency was born.`
+  },
+  {
+    prompts: [
+      'Measure of Time (ex: eons, 47 minutes, centuries)',
+      'Verb ending in -ing (ex: meditating, breakdancing)',
+      'Color (ex: electric purple, seafoam green)',
+      'Number (ex: twelve, 666, ninety-nine)'
+    ],
+    story: (w) => `Kyle spent ${w[0]} ${w[1]} until a ${w[2]} light appeared. ${w[3]} voices spoke the truth: share the wealth. Kyle Bucks were manifested into reality.`
+  },
+  {
+    prompts: [
+      'Adjective - Feeling (ex: enlightened, pumped, terrified)',
+      'Animal (ex: wise owl, confused sloth)',
+      'Interjection (ex: Eureka!, Bingo!, Sweet!)',
+      'Verb - Past Tense (ex: transcended, vibed, awakened)'
+    ],
+    story: (w) => `Kyle felt ${w[0]} when a ${w[1]} taught him ancient wisdom. "${w[2]}" he exclaimed as he ${w[3]} to a higher plane. Kyle Bucks descended from the heavens.`
+  },
+
   // Absurd quests
   {
-    prompts: ['adjective', 'animal', 'verb', 'object', 'number', 'place'],
-    story: (words) => `The ${words[0]} ${words[1]} told me I must ${words[2]} a ${words[3]} ${words[4]} times at ${words[5]} to earn Kyle Bucks. I'm still working on it.`
+    prompts: [
+      'Adjective (ex: impossible, ridiculous, epic)',
+      'Noun - Plural (ex: rubber ducks, Post-it notes)',
+      'Place (ex: the roof, behind the fridge)',
+      'Profession (ex: wizard, crossing guard, DJ)'
+    ],
+    story: (w) => `My ${w[0]} quest required collecting ${w[1]} from ${w[2]}. A mysterious ${w[3]} gave me cryptic clues. Kyle rewarded me with bucks for completing the prophecy.`
   },
   {
-    prompts: ['verb ending in -ing', 'adjective', 'furniture', 'liquid', 'emotion', 'number'],
-    story: (words) => `My quest involved ${words[0]} on a ${words[1]} ${words[2]} while drinking ${words[3]}. I felt ${words[4]} after ${words[5]} attempts. Kyle said "close enough" and gave me bucks anyway.`
+    prompts: [
+      'Person\'s Name (ex: Gordon Ramsay, Beyoncé)',
+      'Verb ending in -ing (ex: backflipping, solving)',
+      'Animal (ex: majestic eagle, grumpy cat)',
+      'Silly Word (ex: whammy, kaboom, schwing)'
+    ],
+    story: (w) => `${w[0]} challenged me to prove my worth by ${w[1]} better than a ${w[2]}. When I succeeded, they shouted "${w[3]}" and Kyle granted me championship bucks!`
   },
   {
-    prompts: ['color', 'verb', 'animal', 'object', 'adjective', 'place'],
-    story: (words) => `To unlock Kyle Bucks, you must ${words[1]} a ${words[0]} ${words[2]} using only a ${words[4]} ${words[3]} while standing in ${words[5]}. I tried. I failed. I got bucks for trying.`
+    prompts: [
+      'Measure of Time (ex: three hours, forty days)',
+      'Verb - Past Tense (ex: conquered, survived, decoded)',
+      'Part of Body (ex: eyebrow, thumb, kneecap)',
+      'Adverb (ex: heroically, awkwardly, gracefully)'
+    ],
+    story: (w) => `For ${w[0]}, I ${w[1]} the challenge using only my ${w[2]}. I completed it ${w[3]} and earned Kyle's eternal respect (and a bunch of bucks).`
   },
-  
-  // Technology disasters
+
+  // Tech disasters
   {
-    prompts: ['adjective', 'technology', 'verb (past tense)', 'number', 'emotion', 'exclamation'],
-    story: (words) => `The ${words[0]} ${words[1]} ${words[2]} after ${words[3]} minutes. I felt ${words[4]} and yelled "${words[5]}!" Kyle appeared with consolation bucks.`
-  },
-  {
-    prompts: ['verb', 'adjective', 'software', 'coworker name', 'object', 'time'],
-    story: (words) => `I tried to ${words[0]} the ${words[1]} ${words[2]} at ${words[5]} but ${words[3]} was using the only ${words[4]}. Kyle witnessed my struggle and awarded bucks.`
-  },
-  {
-    prompts: ['adjective', 'verb ending in -ing', 'electronic device', 'liquid', 'number', 'emotion'],
-    story: (words) => `${words[1]} my ${words[0]} ${words[2]} seemed easy until I spilled ${words[3]} on it ${words[4]} times. Now I feel ${words[5]} but at least I have Kyle Bucks.`
-  },
-  
-  // Food-related chaos
-  {
-    prompts: ['type of food', 'adjective', 'verb (past tense)', 'place', 'number', 'emotion'],
-    story: (words) => `The ${words[0]} was so ${words[1]} that it ${words[2]} across the ${words[3]}. ${words[4]} people witnessed this. We all felt ${words[5]} and Kyle gave everyone bucks.`
+    prompts: [
+      'Adjective (ex: catastrophic, glitchy, bizarre)',
+      'Noun - Plural (ex: laptops, printers, monitors)',
+      'Interjection (ex: Oh no!, Dang it!, Uh oh!)',
+      'Color (ex: error-message red, warning yellow)'
+    ],
+    story: (w) => `The ${w[0]} tech failure made all the ${w[1]} turn ${w[3]}. "${w[2]}" everyone said in unison. Kyle gave us crisis management bucks and called IT.`
   },
   {
-    prompts: ['adjective', 'food', 'verb', 'animal', 'object', 'exclamation'],
-    story: (words) => `I brought ${words[0]} ${words[1]} to the potluck. A ${words[3]} tried to ${words[2]} it with a ${words[4]}. "${words[5]}!" everyone shouted. Kyle awarded creativity bucks.`
+    prompts: [
+      'Person\'s Name (ex: Steve Jobs, Ada Lovelace)',
+      'Verb ending in -ing (ex: debugging, hacking, coding)',
+      'Silly Word (ex: glitcharoo, techno-oops)',
+      'Profession (ex: software engineer, tech guru)'
+    ],
+    story: (w) => `${w[0]} possessed me, and I started ${w[1]} like a possessed ${w[3]}. I kept shouting "${w[2]}" until the problem fixed itself. Kyle gave me bucks for unorthodox methods.`
   },
   {
-    prompts: ['verb ending in -ing', 'type of food', 'adjective', 'number', 'body part', 'emotion'],
-    story: (words) => `${words[0]} ${words[1]} is a ${words[2]} experience. I did it ${words[3]} times until my ${words[4]} hurt. I felt ${words[5]} but Kyle said it was buck-worthy.`
+    prompts: [
+      'Number (ex: 404, eleventy billion, zero)',
+      'Verb - Past Tense (ex: crashed, froze, rebooted)',
+      'Animal (ex: cyber-squirrel, robot chicken)',
+      'Measure of Time (ex: nanoseconds, hours, days)'
+    ],
+    story: (w) => `Error ${w[0]} appeared when the system ${w[1]} thanks to a ${w[2]} in the server room. It took ${w[3]} to fix. Kyle gave us patience bucks.`
   },
-  
+
+  // Food chaos
+  {
+    prompts: [
+      'Adjective (ex: suspicious, delicious, radioactive)',
+      'Noun - Plural (ex: sandwiches, bananas, tacos)',
+      'Part of Body (ex: taste buds, stomach, tongue)',
+      'Interjection (ex: Yum!, Blegh!, Whoa!)'
+    ],
+    story: (w) => `Someone brought ${w[0]} ${w[1]} to the potluck. My ${w[2]} immediately regretted it. "${w[3]}" I said. Kyle gave everyone pizza bucks as compensation.`
+  },
+  {
+    prompts: [
+      'Person\'s Name (ex: Guy Fieri, Julia Child)',
+      'Verb ending in -ing (ex: baking, grilling, mixing)',
+      'Animal (ex: competitive raccoon, foodie bear)',
+      'Color (ex: burnt orange, moldy green)'
+    ],
+    story: (w) => `${w[0]} hosted a cooking show, ${w[1]} against a ${w[2]}. Everything turned ${w[3]} and possibly sentient. Kyle gave us hazard pay bucks.`
+  },
+  {
+    prompts: [
+      'Adjective - Feeling (ex: hungry, nauseous, excited)',
+      'Noun - Plural (ex: french fries, cookies, sushi rolls)',
+      'Adverb (ex: aggressively, delicately, weirdly)',
+      'Silly Word (ex: nom-nom, yummy-yum, bleaurgh)'
+    ],
+    story: (w) => `I felt ${w[0]} watching someone eat ${w[1]} ${w[2]} while saying "${w[3]}" between bites. Kyle found it hilarious and gave us lunch bucks.`
+  },
+
   // Meeting madness
   {
-    prompts: ['adjective', 'verb (past tense)', 'object', 'number', 'emotion', 'excuse'],
-    story: (words) => `The ${words[0]} meeting went sideways when someone ${words[1]} their ${words[2]}. After ${words[3]} minutes of feeling ${words[4]}, I used "${words[5]}" as my excuse to leave. Kyle approved.`
+    prompts: [
+      'Measure of Time (ex: infinity, six hours, forever)',
+      'Adjective (ex: pointless, mind-numbing, chaotic)',
+      'Profession (ex: motivational speaker, mime, Viking)',
+      'Interjection (ex: Finally!, Good grief!, Hallelujah!)'
+    ],
+    story: (w) => `The meeting lasted ${w[0]} and was completely ${w[1]}. A guest ${w[2]} made it worse. When it ended, we all shouted "${w[3]}" Kyle gave us freedom bucks.`
   },
   {
-    prompts: ['type of meeting', 'adjective', 'verb', 'animal', 'object', 'number'],
-    story: (words) => `During the ${words[0]}, a ${words[1]} ${words[3]} tried to ${words[2]} the ${words[4]}. It happened ${words[5]} times before we gave up. Kyle rewarded us for perseverance.`
+    prompts: [
+      'Person\'s Name (ex: Michael Scott, Leslie Knope)',
+      'Verb ending in -ing (ex: presenting, rambling, dancing)',
+      'Silly Word (ex: synergy, paradigm-shift, discombobulate)',
+      'Part of Body (ex: brain cells, willpower, sanity)'
+    ],
+    story: (w) => `${w[0]} spent the entire meeting ${w[1]} about "${w[2]}" until everyone lost their ${w[3]}. Kyle ended it early with generous bucks for everyone.`
   },
   {
-    prompts: ['verb ending in -ing', 'adjective', 'presentation topic', 'emotion', 'number', 'object'],
-    story: (words) => `I was ${words[0]} about ${words[2]} when the ${words[1]} ${words[5]} stopped working. After ${words[4]} minutes of feeling ${words[3]}, Kyle rescued me with emergency bucks.`
+    prompts: [
+      'Animal (ex: bored sloth, energetic squirrel)',
+      'Verb - Past Tense (ex: dozed off, escaped, interrupted)',
+      'Color (ex: PowerPoint blue, chart green)',
+      'Number (ex: fifty-seven, too many, zero)'
+    ],
+    story: (w) => `A ${w[0]} ${w[1]} during the presentation about ${w[2]} strategies. We covered ${w[3]} slides but learned nothing. Kyle gave us endurance bucks.`
   },
-  
-  // Supernatural office
+
+  // Supernatural
   {
-    prompts: ['mythical creature', 'adjective', 'verb (past tense)', 'object', 'place', 'sound'],
-    story: (words) => `A ${words[1]} ${words[0]} ${words[2]} into ${words[4]} carrying a ${words[3]}. It made a "${words[5]}" sound and announced Kyle Buck distribution. Nobody questioned it.`
-  },
-  {
-    prompts: ['magical power', 'adjective', 'verb', 'number', 'object', 'emotion'],
-    story: (words) => `I discovered I have ${words[0]} which lets me ${words[2]} ${words[1]} ${words[4]}s ${words[3]} times. I felt ${words[5]} about this power. Kyle said "use it wisely" and gave me bucks.`
-  },
-  {
-    prompts: ['supernatural event', 'adjective', 'place', 'object', 'number', 'verb (past tense)'],
-    story: (words) => `The ${words[0]} occurred in the ${words[1]} ${words[2]}. A ${words[3]} ${words[5]} ${words[4]} times. Kyle declared it "a sign" and distributed bucks to all witnesses.`
-  },
-  
-  // Time travel nonsense  
-  {
-    prompts: ['year', 'adjective', 'historical figure', 'verb (past tense)', 'object', 'emotion'],
-    story: (words) => `I time traveled to ${words[0]} and met a ${words[1]} ${words[2]} who ${words[3]} their ${words[4]}. We both felt ${words[5]}. They said "sounds like you need Kyle Bucks." They were right.`
+    prompts: [
+      'Adjective (ex: haunted, mystical, cursed)',
+      'Place (ex: the copy room, fourth floor, janitor closet)',
+      'Interjection (ex: Spooky!, Ghost!, Run!)',
+      'Profession (ex: ghost hunter, exorcist, medium)'
+    ],
+    story: (w) => `The ${w[0]} presence in ${w[1]} made everyone scream "${w[2]}" We called a ${w[3]} but Kyle just gave us bravery bucks instead.`
   },
   {
-    prompts: ['time period', 'verb', 'adjective', 'object', 'place', 'number'],
-    story: (words) => `Back in ${words[0]}, people would ${words[1]} ${words[2]} ${words[3]}s at ${words[4]} for ${words[5]} hours. That's how Kyle Bucks started. Allegedly.`
+    prompts: [
+      'Person\'s Name (ex: Dracula, Casper, Gandalf)',
+      'Verb ending in -ing (ex: floating, glowing, vanishing)',
+      'Silly Word (ex: boo-yah, spook-a-roo, phantasma)',
+      'Measure of Time (ex: midnight, witching hour, 3am)'
+    ],
+    story: (w) => `${w[0]} appeared at ${w[3]}, ${w[1]} and shouting "${w[2]}" repeatedly. Turns out they just wanted Kyle Bucks. We all got paranormal activity bucks.`
   },
   {
-    prompts: ['adjective', 'verb (past tense)', 'invention', 'number', 'emotion', 'celebrity'],
-    story: (words) => `The ${words[0]} moment when I ${words[1]} the ${words[2]} changed everything. ${words[5]} witnessed it ${words[3]} times and felt ${words[4]}. Kyle Bucks rained from the sky.`
+    prompts: [
+      'Adjective - Feeling (ex: spooked, enchanted, possessed)',
+      'Noun - Plural (ex: crystals, candles, herbs)',
+      'Animal (ex: black cat, mystical owl, spirit animal)',
+      'Color (ex: ectoplasm green, aura purple)'
+    ],
+    story: (w) => `I felt ${w[0]} after using ${w[1]} to summon a ${w[2]}. Everything glowed ${w[3]} and reality shifted. Kyle gave us metaphysical bucks for the experience.`
   },
-  
-  // Sports and games
+
+  // Time travel
   {
-    prompts: ['sport', 'adjective', 'verb (past tense)', 'object', 'number', 'body part'],
-    story: (words) => `We played ${words[0]} with a ${words[1]} ${words[3]}. I ${words[2]} it ${words[4]} times and injured my ${words[5]}. Kyle called it "the most buck-worthy performance ever."`
-  },
-  {
-    prompts: ['game', 'adjective', 'verb', 'coworker name', 'emotion', 'number'],
-    story: (words) => `${words[3]} challenged me to ${words[0]}. The ${words[1]} rules required us to ${words[2]} ${words[5]} times. We felt ${words[4]} but Kyle awarded us both bucks.`
-  },
-  {
-    prompts: ['type of competition', 'adjective', 'verb (past tense)', 'object', 'place', 'emotion'],
-    story: (words) => `The ${words[0]} at ${words[4]} got ${words[1]} when someone ${words[2]} the ${words[3]}. Everyone felt ${words[5]}. Kyle declared us all winners and distributed bucks.`
-  },
-  
-  // Nature and animals
-  {
-    prompts: ['animal', 'adjective', 'verb (past tense)', 'object', 'place', 'sound'],
-    story: (words) => `A ${words[1]} ${words[0]} ${words[2]} my ${words[3]} at ${words[4]} while making a "${words[5]}" noise. This violated several workplace policies but earned me Kyle Bucks.`
+    prompts: [
+      'Measure of Time (ex: yesterday, 1985, next Tuesday)',
+      'Verb - Past Tense (ex: time-traveled, zapped, teleported)',
+      'Person\'s Name (ex: Doc Brown, Marty McFly)',
+      'Interjection (ex: Great Scott!, Whoa!, No way!)'
+    ],
+    story: (w) => `I ${w[1]} to ${w[0]} and met ${w[2]}! "${w[3]}" I said when I realized Kyle Bucks existed in all timelines. Returned with infinite temporal bucks.`
   },
   {
-    prompts: ['type of bird', 'color', 'verb', 'food', 'number', 'place'],
-    story: (words) => `The ${words[1]} ${words[0]} learned to ${words[2]} ${words[3]} at ${words[5]}. It did this ${words[4]} times before Kyle showed up with bucks for everyone.`
+    prompts: [
+      'Adjective (ex: alternate, dystopian, groovy)',
+      'Noun - Plural (ex: flying cars, robots, dinosaurs)',
+      'Place (ex: ancient Rome, the future, parallel universe)',
+      'Silly Word (ex: flux-capacitor, chrono-whoops)'
+    ],
+    story: (w) => `The ${w[0]} timeline had ${w[1]} everywhere! I visited ${w[2]} and learned the ancient word "${w[3]}" Kyle gave me bucks across all dimensions.`
   },
   {
-    prompts: ['adjective', 'plant', 'verb (past tense)', 'liquid', 'place', 'emotion'],
-    story: (words) => `My ${words[0]} ${words[1]} ${words[2]} when I watered it with ${words[3]} in the ${words[4]}. I felt ${words[5]} about this decision. Kyle said "bold choice" and gave me bucks.`
+    prompts: [
+      'Number (ex: twenty years, 88mph, infinite)',
+      'Verb ending in -ing (ex: paradoxing, time-looping)',
+      'Part of Body (ex: temporal lobe, space-time continuum)',
+      'Profession (ex: time cop, chrono-archaeologist)'
+    ],
+    story: (w) => `After ${w[0]} of ${w[1]}, I broke my ${w[2]} and became a ${w[3]}. Kyle gave me retirement bucks from every possible timeline.`
   },
-  
-  // Musical mayhem
+
+  // Sports
   {
-    prompts: ['musical instrument', 'adjective', 'verb (past tense)', 'place', 'emotion', 'number'],
-    story: (words) => `Someone ${words[2]} a ${words[1]} ${words[0]} in ${words[3]}. The sound made ${words[5]} people feel ${words[4]}. Kyle called it "performance art" and awarded bucks.`
-  },
-  {
-    prompts: ['genre of music', 'adjective', 'verb', 'object', 'coworker name', 'emotion'],
-    story: (words) => `${words[4]} started playing ${words[0]} while trying to ${words[2]} the ${words[1]} ${words[3]}. We all felt ${words[5]}. Kyle declared it a "productivity enhancement" worth bucks.`
-  },
-  {
-    prompts: ['song title', 'adjective', 'verb (past tense)', 'place', 'number', 'emotion'],
-    story: (words) => `"${words[0]}" played ${words[1]}ly in ${words[3]} for ${words[4]} hours straight. Everyone ${words[2]} and felt ${words[5]}. Kyle ended our suffering with bucks.`
-  },
-  
-  // Transportation troubles
-  {
-    prompts: ['vehicle', 'adjective', 'verb (past tense)', 'place', 'object', 'number'],
-    story: (words) => `I rode a ${words[1]} ${words[0]} to ${words[3]} carrying a ${words[4]}. After ${words[5]} attempts, I ${words[2]} successfully. Kyle witnessed this feat and awarded bucks.`
+    prompts: [
+      'Adjective (ex: competitive, athletic, clumsy)',
+      'Verb - Past Tense (ex: slam-dunked, scored, fumbled)',
+      'Animal (ex: sporty kangaroo, competitive sloth)',
+      'Interjection (ex: Score!, Goooal!, Touchdown!)'
+    ],
+    story: (w) => `The ${w[0]} tournament was intense! I ${w[1]} better than a ${w[2]}. The crowd chanted "${w[3]}" Kyle gave me championship bucks!`
   },
   {
-    prompts: ['mode of transport', 'adjective', 'verb', 'animal', 'emotion', 'place'],
-    story: (words) => `My ${words[0]} broke down so I had to ${words[2]} on a ${words[1]} ${words[3]} to get to ${words[5]}. I felt ${words[4]} the entire time. Kyle said "that's buck-worthy commitment."`
-  },
-  
-  // Weather chaos
-  {
-    prompts: ['type of weather', 'adjective', 'verb (past tense)', 'object', 'emotion', 'number'],
-    story: (words) => `The ${words[0]} was so ${words[1]} that it ${words[2]} my ${words[3]}. I felt ${words[4]} for ${words[5]} whole minutes. Kyle saw my pain and granted bucks.`
-  },
-  {
-    prompts: ['weather event', 'verb', 'place', 'adjective', 'object', 'emotion'],
-    story: (words) => `During the ${words[0]}, we had to ${words[1]} to ${words[2]} with only a ${words[3]} ${words[4]}. Everyone felt ${words[5]}. Kyle said "that's teamwork" and gave us all bucks.`
-  },
-  
-  // Technology failures
-  {
-    prompts: ['software name', 'adjective', 'verb (past tense)', 'number', 'emotion', 'exclamation'],
-    story: (words) => `${words[0]} crashed and became ${words[1]}. I ${words[2]} for ${words[3]} minutes feeling ${words[4]} before screaming "${words[5]}!" Kyle appeared with tech support bucks.`
+    prompts: [
+      'Person\'s Name (ex: LeBron James, Serena Williams)',
+      'Verb ending in -ing (ex: shooting, running, scoring)',
+      'Piece of Clothing (ex: jersey, sneakers, headband)',
+      'Number (ex: three-pointer, hole-in-one, 100 points)'
+    ],
+    story: (w) => `${w[0]} coached me in ${w[1]} while wearing their lucky ${w[2]}. I scored ${w[3]} and won. Kyle gave me MVP bucks and a trophy.`
   },
   {
-    prompts: ['electronic device', 'adjective', 'verb', 'coworker name', 'object', 'number'],
-    story: (words) => `The ${words[0]} was being ${words[1]} so ${words[3]} tried to ${words[2]} it with a ${words[4]}. After ${words[5]} attempts, Kyle intervened with "please stop" bucks.`
+    prompts: [
+      'Measure of Time (ex: overtime, halftime, sudden death)',
+      'Adverb (ex: aggressively, gracefully, terribly)',
+      'Silly Word (ex: swoosh, kabonk, nothing-but-net)',
+      'Color (ex: team red, victory gold)'
+    ],
+    story: (w) => `During ${w[0]}, I played ${w[1]} and made a "${w[2]}" move that turned ${w[3]}. Kyle gave us all sportsmanship bucks!`
   },
-  
-  // Kitchen disasters
+
+  // Nature and weather
   {
-    prompts: ['appliance', 'adjective', 'verb (past tense)', 'food', 'number', 'emotion'],
-    story: (words) => `The break room ${words[0]} got ${words[1]} and ${words[2]} everyone's ${words[3]}. ${words[4]} people felt ${words[5]}. Kyle bought pizza and gave us all apology bucks.`
-  },
-  {
-    prompts: ['type of dish', 'adjective', 'verb', 'ingredient', 'number', 'coworker name'],
-    story: (words) => `${words[5]} tried to ${words[2]} ${words[0]} but forgot the ${words[3]}. It turned ${words[1]} after ${words[4]} minutes. Kyle tasted it anyway and awarded brave bucks.`
-  },
-  
-  // Weekend stories
-  {
-    prompts: ['hobby', 'adjective', 'verb (past tense)', 'place', 'object', 'emotion'],
-    story: (words) => `My weekend ${words[0]} got ${words[1]} when I ${words[2]} at ${words[3]} with my ${words[4]}. I felt ${words[5]} about it Monday morning. Kyle said "at least you tried" and gave me bucks.`
-  },
-  {
-    prompts: ['activity', 'adjective', 'verb', 'number', 'body part', 'emotion'],
-    story: (words) => `I spent ${words[3]} hours doing ${words[0]}. My ${words[4]} became ${words[1]} from ${words[2]}ing so much. I felt ${words[5]} but earned weekend warrior bucks from Kyle.`
-  },
-  
-  // Office supplies gone wild
-  {
-    prompts: ['office supply', 'adjective', 'verb (past tense)', 'number', 'place', 'emotion'],
-    story: (words) => `Someone's ${words[0]} became ${words[1]} and ${words[2]} ${words[3]} times in the ${words[4]}. We all felt ${words[5]}. Kyle declared it "office art" worth bucks.`
+    prompts: [
+      'Adjective (ex: torrential, sunny, apocalyptic)',
+      'Noun - Plural (ex: clouds, rainbows, thunderbolts)',
+      'Verb - Past Tense (ex: rained, snowed, hurricaned)',
+      'Interjection (ex: Wow!, Mother Nature!, Yikes!)'
+    ],
+    story: (w) => `The ${w[0]} weather brought ${w[1]} that ${w[2]} on the office. "${w[3]}" everyone said. Kyle gave us act-of-god bucks and sent us home.`
   },
   {
-    prompts: ['type of paper', 'adjective', 'verb', 'coworker name', 'object', 'number'],
-    story: (words) => `${words[3]} needed ${words[0]} but it was too ${words[1]}. They tried to ${words[2]} it with a ${words[4]} ${words[5]} times. Kyle awarded problem-solving bucks.`
-  },
-  
-  // Clothing catastrophes
-  {
-    prompts: ['article of clothing', 'adjective', 'verb (past tense)', 'place', 'emotion', 'color'],
-    story: (words) => `My ${words[0]} turned ${words[5]} and ${words[1]} at ${words[3]}. I ${words[2]} in panic feeling ${words[4]}. Kyle saw my distress and gave me emergency fashion bucks.`
-  },
-  {
-    prompts: ['accessory', 'adjective', 'verb', 'number', 'object', 'emotion'],
-    story: (words) => `I wore a ${words[1]} ${words[0]} and tried to ${words[2]} with ${words[3]} ${words[4]}s. It made me feel ${words[5]}. Kyle called it "a look" and awarded style bucks.`
-  },
-  
-  // Communication fails
-  {
-    prompts: ['verb of communication', 'adjective', 'message', 'coworker name', 'emotion', 'number'],
-    story: (words) => `I tried to ${words[0]} "${words[2]}" to ${words[3]} but it came out ${words[1]}. After ${words[5]} attempts, I felt ${words[4]}. Kyle said "communication is hard" and gave me bucks.`
+    prompts: [
+      'Animal (ex: weather-predicting groundhog, storm crow)',
+      'Place (ex: the great outdoors, the wilderness)',
+      'Adjective - Feeling (ex: refreshed, soaked, windblown)',
+      'Color (ex: sky blue, storm gray, sunset orange)'
+    ],
+    story: (w) => `A ${w[0]} appeared at ${w[1]} and made everyone feel ${w[2]}. The sky turned ${w[3]} and Kyle gave us nature appreciation bucks.`
   },
   {
-    prompts: ['type of document', 'adjective', 'verb (past tense)', 'number', 'place', 'emotion'],
-    story: (words) => `My ${words[0]} became ${words[1]} when it ${words[2]} ${words[3]} times at ${words[4]}. I felt ${words[5]} about the whole situation. Kyle awarded documentation bucks anyway.`
+    prompts: [
+      'Measure of Time (ex: golden hour, dawn, dusk)',
+      'Verb ending in -ing (ex: photosynthesizing, basking)',
+      'Part of Body (ex: skin, lungs, soul)',
+      'Silly Word (ex: Mother-Nature-magic, eco-vibes)'
+    ],
+    story: (w) => `At ${w[0]}, I spent time ${w[1]} to rejuvenate my ${w[2]} with pure "${w[3]}" energy. Kyle gave us wellness bucks for touching grass.`
   },
-  
-  // Exercise fails
+
+  // Music
   {
-    prompts: ['exercise', 'adjective', 'verb (past tense)', 'body part', 'number', 'emotion'],
-    story: (words) => `I attempted ${words[0]} but my ${words[1]} ${words[3]} ${words[2]} after ${words[4]} tries. I felt ${words[5]} about my fitness level. Kyle gave me participation bucks.`
-  },
-  {
-    prompts: ['sport', 'adjective', 'verb', 'object', 'coworker name', 'number'],
-    story: (words) => `${words[4]} challenged me to ${words[0]}. I had to ${words[2]} a ${words[1]} ${words[3]} ${words[5]} times. I lost spectacularly. Kyle gave me "you tried" bucks.`
-  },
-  
-  // Celebrity encounters
-  {
-    prompts: ['celebrity', 'adjective', 'verb (past tense)', 'object', 'place', 'emotion'],
-    story: (words) => `I dreamed ${words[0]} ${words[2]} a ${words[1]} ${words[3]} at ${words[4]}. I felt ${words[5]} when I woke up. It wasn't real but Kyle gave me imagination bucks anyway.`
-  },
-  {
-    prompts: ['famous person', 'adjective', 'verb', 'advice', 'number', 'emotion'],
-    story: (words) => `${words[0]} gave me ${words[1]} advice: "${words[3]}". I tried to ${words[2]} this ${words[4]} times and felt ${words[5]}. Kyle said "at least you listened" and awarded bucks.`
-  },
-  
-  // Color and number chaos
-  {
-    prompts: ['color', 'adjective', 'object', 'number', 'verb (past tense)', 'place'],
-    story: (words) => `Everything turned ${words[0]} and ${words[1]} when the ${words[2]} ${words[4]} ${words[3]} times at ${words[5]}. Kyle said "that's concerning" but gave me observation bucks.`
+    prompts: [
+      'Adjective (ex: loud, terrible, Grammy-worthy)',
+      'Person\'s Name (ex: Beethoven, Taylor Swift, Weird Al)',
+      'Verb ending in -ing (ex: singing, drumming, yodeling)',
+      'Interjection (ex: Encore!, Bravo!, Stop!)'
+    ],
+    story: (w) => `The ${w[0]} performance featured ${w[1]} ${w[2]} on stage. The audience shouted "${w[3]}" Kyle gave everyone concert ticket bucks!`
   },
   {
-    prompts: ['number', 'adjective', 'noun', 'verb', 'place', 'emotion'],
-    story: (words) => `I counted ${words[0]} ${words[1]} ${words[2]}s and had to ${words[3]} them all at ${words[4]}. I felt ${words[5]} about this task. Kyle appreciated my dedication with counting bucks.`
-  },
-  
-  // Random absurdity
-  {
-    prompts: ['adjective', 'verb ending in -ing', 'random object', 'place', 'sound effect', 'number'],
-    story: (words) => `The ${words[0]} act of ${words[1]} a ${words[2]} at ${words[3]} went "*${words[4]}*" ${words[5]} times. Nobody knows why. Kyle gave us all "what just happened" bucks.`
-  },
-  {
-    prompts: ['texture', 'noun', 'verb (past tense)', 'liquid', 'emotion', 'number'],
-    story: (words) => `The ${words[0]} ${words[1]} ${words[2]} after contact with ${words[3]}. I felt ${words[4]} for ${words[5]} seconds. Kyle said "science!" and awarded experimental bucks.`
+    prompts: [
+      'Noun - Plural (ex: kazoos, electric guitars, tubas)',
+      'Animal (ex: musical whale, dancing parrot)',
+      'Silly Word (ex: rock-n-roll, cha-cha-cha, jazz-hands)',
+      'Profession (ex: rockstar, DJ, conductor)'
+    ],
+    story: (w) => `We formed a band using only ${w[0]} and a trained ${w[1]}. Our signature sound was "${w[2]}" We became famous ${w[3]}s. Kyle sponsored our tour with bucks!`
   },
   {
-    prompts: ['shape', 'adjective', 'verb', 'animal', 'object', 'place'],
-    story: (words) => `I discovered a ${words[0]}-shaped, ${words[1]} ${words[3]} that could ${words[2]} a ${words[4]} in ${words[5]}. Kyle called it "the discovery of the century" and maxed out my bucks.`
+    prompts: [
+      'Color (ex: psychedelic purple, neon pink)',
+      'Verb - Past Tense (ex: jammed, rocked out, performed)',
+      'Measure of Time (ex: three encores, all night long)',
+      'Adverb (ex: passionately, off-key, beautifully)'
+    ],
+    story: (w) => `The ${w[0]} lights flashed as we ${w[1]} for ${w[2]}, playing ${w[3]}. Kyle gave us rock legend bucks and asked for an autograph.`
+  },
+
+  // Transportation
+  {
+    prompts: [
+      'Adjective (ex: speedy, rusty, futuristic)',
+      'Noun - Plural (ex: spaceships, shopping carts, unicycles)',
+      'Place (ex: the highway, Mars, downtown)',
+      'Interjection (ex: Vroom!, Beep beep!, Whoosh!)'
+    ],
+    story: (w) => `We raced ${w[0]} ${w[1]} to ${w[2]} while screaming "${w[3]}" the whole way. Kyle gave us speed demon bucks and traffic tickets.`
   },
   {
-    prompts: ['smell', 'adjective', 'verb (past tense)', 'place', 'number', 'emotion'],
-    story: (words) => `The office smelled like ${words[0]} and got ${words[1]} in ${words[3]}. This ${words[2]} ${words[4]} times before we felt ${words[5]}. Kyle gave us all "survivor" bucks.`
+    prompts: [
+      'Person\'s Name (ex: Elon Musk, Lightning McQueen)',
+      'Verb ending in -ing (ex: driving, flying, teleporting)',
+      'Animal (ex: road-running ostrich, commuting penguin)',
+      'Number (ex: 88mph, warp speed, zero mph)'
+    ],
+    story: (w) => `${w[0]} taught me the art of ${w[1]} faster than a ${w[2]} at ${w[3]}. Kyle gave us frequent traveler bucks for the adventure!`
   },
   {
-    prompts: ['sound', 'adjective', 'object', 'verb', 'coworker name', 'number'],
-    story: (words) => `The "${words[0]}" sound came from ${words[4]}'s ${words[1]} ${words[2]}. They tried to ${words[3]} it ${words[5]} times. Kyle said "I don't want to know" and gave mystery bucks.`
+    prompts: [
+      'Piece of Clothing (ex: seatbelt, driving gloves)',
+      'Part of Body (ex: foot, steering hand)',
+      'Silly Word (ex: zoom-zoom, vroom-vroom)',
+      'Adjective - Feeling (ex: carsick, exhilarated, lost)'
+    ],
+    story: (w) => `I wore my lucky ${w[0]}, controlled everything with my ${w[1]}, shouted "${w[2]}" and felt ${w[3]} the whole ride. Kyle gave us road trip bucks!`
   },
-  
-  // Dream logic
+
+  // Pure chaos
   {
-    prompts: ['adjective', 'action', 'famous place', 'object', 'emotion', 'number'],
-    story: (words) => `In my dream, I had to ${words[1]} at ${words[2]} using a ${words[0]} ${words[3]}. I did it ${words[5]} times while feeling ${words[4]}. Kyle appeared and gave me dream bucks. They were real.`
-  },
-  {
-    prompts: ['impossible thing', 'adjective', 'verb (past tense)', 'number', 'place', 'emotion'],
-    story: (words) => `I achieved ${words[0]} by being ${words[1]} and ${words[2]}ing ${words[3]} times in ${words[4]}. I felt ${words[5]} about defying physics. Kyle gave me reality-bending bucks.`
-  },
-  
-  // Social situations
-  {
-    prompts: ['social event', 'adjective', 'verb (past tense)', 'food', 'number', 'emotion'],
-    story: (words) => `At the ${words[0]}, things got ${words[1]} when someone ${words[2]} all the ${words[3]}. ${words[4]} people felt ${words[5]}. Kyle saved the day with party bucks for everyone.`
-  },
-  {
-    prompts: ['type of gathering', 'adjective', 'verb', 'object', 'coworker name', 'emotion'],
-    story: (words) => `The ${words[0]} required everyone to ${words[2]} a ${words[1]} ${words[3]}. ${words[4]} refused and felt ${words[5]}. Kyle respected the rebellion and gave bucks anyway.`
-  },
-  
-  // Pure nonsense
-  {
-    prompts: ['adjective', 'verb ending in -ing', 'fictional character', 'object', 'number', 'place'],
-    story: (words) => `${words[2]} was ${words[0]} while ${words[1]} ${words[4]} ${words[3]}s in ${words[5]}. This made perfect sense to Kyle who distributed bucks immediately.`
+    prompts: [
+      'Adjective (ex: random, inexplicable, chaotic)',
+      'Verb - Past Tense (ex: happened, occurred, manifested)',
+      'Silly Word (ex: shenanigans, tomfoolery, hullabaloo)',
+      'Interjection (ex: What?!, Huh?!, Seriously?!)'
+    ],
+    story: (w) => `Something ${w[0]} just ${w[1]} for no reason. Total "${w[2]}" ensued. "${w[3]}" everyone said. Kyle gave us confusion bucks and walked away.`
   },
   {
-    prompts: ['made-up word', 'adjective', 'verb (past tense)', 'emotion', 'number', 'object'],
-    story: (words) => `The ancient art of "${words[0]}" became ${words[1]} when I ${words[2]} and felt ${words[3]} about ${words[4]} ${words[5]}s. Kyle understood completely and gave me wisdom bucks.`
+    prompts: [
+      'Number (ex: forty-two, infinity, zero)',
+      'Noun - Plural (ex: rubber chickens, fidget spinners)',
+      'Adverb (ex: spontaneously, mysteriously, hilariously)',
+      'Color (ex: plaid, transparent, iridescent)'
+    ],
+    story: (w) => `Exactly ${w[0]} ${w[1]} appeared ${w[2]} and turned ${w[3]}. Nobody questioned it. Kyle just threw bucks at the situation until it resolved itself.`
   },
   {
-    prompts: ['adjective', 'silly action', 'number', 'emotion', 'place', 'object'],
-    story: (words) => `Company policy now requires ${words[1]} ${words[2]} times while feeling ${words[3]} at ${words[4]} using only a ${words[0]} ${words[5]}. Kyle approved this. We don't ask questions.`
+    prompts: [
+      'Person\'s Name (ex: Bigfoot, The Tooth Fairy)',
+      'Animal (ex: confused flamingo, philosophical capybara)',
+      'Verb ending in -ing (ex: existing, vibing, pondering)',
+      'Measure of Time (ex: the eternal now, 4:20, tea time)'
+    ],
+    story: (w) => `${w[0]} and a ${w[1]} were just ${w[2]} together at ${w[3]}. It was beautiful. It was art. Kyle gave us existential bucks for witnessing it.`
   },
   {
-    prompts: ['verb', 'adjective', 'random noun', 'emotion', 'number', 'exclamation'],
-    story: (words) => `To ${words[0]} a ${words[1]} ${words[2]} while feeling ${words[3]} ${words[4]} times in a row is the secret to Kyle Bucks. "${words[5]}!" I shouted upon completion.`
-  },
-  {
-    prompts: ['superpower', 'adjective', 'verb (past tense)', 'object', 'place', 'number'],
-    story: (words) => `I gained the ${words[0]} power which made everything ${words[1]}. I ${words[2]} the ${words[3]} at ${words[4]} ${words[5]} times. Kyle called me a superhero and gave me super bucks.`
-  },
-  {
-    prompts: ['type of dance', 'adjective', 'place', 'object', 'emotion', 'number'],
-    story: (words) => `The ${words[0]} became ${words[1]} when performed in ${words[2]} with a ${words[3]}. I felt ${words[4]} after ${words[5]} performances. Kyle gave me choreography bucks.`
+    prompts: [
+      'Adjective - Feeling (ex: bewildered, enlightened, unhinged)',
+      'Profession (ex: chaos coordinator, professional weirdo)',
+      'Part of Body (ex: funny bone, third eye, soul)',
+      'Interjection (ex: Bazinga!, Cowabunga!, Yeet!)'
+    ],
+    story: (w) => `I felt ${w[0]} after becoming an official ${w[1]}. It awakened my ${w[2]} and now I only communicate by yelling "${w[3]}" Kyle gave me bucks for committing to the bit.`
   }
 ];
 
@@ -352,17 +420,20 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  
-  const { name, words } = req.body;
-  
-  if (!name || !words || !Array.isArray(words)) {
-    return res.status(400).json({ error: 'Invalid request' });
-  }
-  
+
   try {
     const client = getRedis();
-    
-    // Check player balance
+    const { name, words } = req.body;
+
+    // Words array length is flexible (4-7 words depending on the story)
+    if (!name || !words || !Array.isArray(words) || words.length < 4) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid request. Need name and at least 4 words.' 
+      });
+    }
+
+    // Get player data
     const playersJson = await client.get('players');
     const players = playersJson ? JSON.parse(playersJson) : {};
     
@@ -393,7 +464,8 @@ export default async function handler(req, res) {
     res.status(200).json({ 
       success: true,
       story,
-      newBalance: players[name]
+      newBalance: players[name],
+      prompts: template.prompts // Send prompts back for reference
     });
   } catch (error) {
     console.error('Error playing madlib:', error);
