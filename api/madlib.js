@@ -423,7 +423,7 @@ export default async function handler(req, res) {
 
   try {
     const client = getRedis();
-    const { name, words } = req.body;
+    const { name, words, templateIndex } = req.body;
 
     // Words array length is flexible (4-7 words depending on the story)
     if (!name || !words || !Array.isArray(words) || words.length < 4) {
@@ -455,8 +455,9 @@ export default async function handler(req, res) {
     players[name] -= 20;
     await client.set('players', JSON.stringify(players));
     
-    // Pick a random story template
-    const template = storyTemplates[Math.floor(Math.random() * storyTemplates.length)];
+    // Use the template index from client, or random if not provided
+    const index = templateIndex !== undefined ? templateIndex : Math.floor(Math.random() * storyTemplates.length);
+    const template = storyTemplates[index];
     
     // Generate the story with their words
     const story = template.story(words);
@@ -475,4 +476,3 @@ export default async function handler(req, res) {
       details: error.message
     });
   }
-}
