@@ -66,7 +66,7 @@
         }
         
         .input-group { 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
         }
         
         label {
@@ -74,7 +74,15 @@
             margin-bottom: 5px;
             font-weight: 600;
             color: #333;
-            font-size: 14px;
+            font-size: 15px;
+        }
+        
+        .example-text {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            margin-top: 2px;
+            font-weight: 400;
         }
         
         input[type="text"] {
@@ -84,6 +92,13 @@
             border-radius: 10px;
             font-size: 16px;
             font-family: 'Fredoka', sans-serif;
+            margin-top: 5px;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
         }
         
         button {
@@ -98,9 +113,15 @@
             font-size: 18px;
             width: 100%;
             margin-top: 10px;
+            transition: all 0.2s;
         }
         
-        button:hover:not(:disabled) { background: #5568d3; }
+        button:hover:not(:disabled) { 
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
         button:disabled {
             background: #ccc;
             cursor: not-allowed;
@@ -109,7 +130,7 @@
         .madlib-input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 20px;
             margin: 20px 0;
         }
         
@@ -120,7 +141,7 @@
         }
         
         .madlib-story {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 25px;
             border-radius: 15px;
             font-size: 18px;
@@ -143,6 +164,24 @@
         }
         
         .hidden { display: none; }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .back-button {
+            background: #4ecdc4;
+        }
+        
+        .back-button:hover {
+            background: #3fb8b0;
+        }
     </style>
 </head>
 <body>
@@ -178,9 +217,9 @@
         <!-- Step 4: Story Result (hidden initially) -->
         <div id="madlibResult" class="hidden">
             <div class="madlib-story" id="madlibStory"></div>
-            <div style="display: flex; gap: 10px;">
+            <div class="button-group">
                 <button onclick="playAgain()">🔄 Play Again (20 Kyle Bucks)</button>
-                <button onclick="location.href='/'" style="background: #4ecdc4;">🎡 Back to Wheel</button>
+                <button onclick="location.href='/'" class="back-button">🎡 Back to Wheel</button>
             </div>
         </div>
     </div>
@@ -189,20 +228,6 @@
         let currentPlayerName = '';
         let currentBalance = 0;
         let currentPrompts = [];
-        
-        // 30 different madlib templates (simplified versions - full set in API)
-        const promptSets = [
-            ['adjective', 'noun', 'verb (past tense)', 'place', 'food', 'number'],
-            ['emotion', 'verb ending in -ing', 'object', 'place', 'sound', 'adjective'],
-            ['color', 'animal', 'verb ending in -ing', 'noun', 'adjective', 'vehicle'],
-            ['adjective', 'body part', 'verb', 'animal', 'liquid', 'celebrity'],
-            ['weather', 'emotion', 'verb', 'object', 'adjective', 'location'],
-            ['type of dance', 'adjective', 'food', 'mythical creature', 'verb', 'time period'],
-            ['adjective', 'office supply', 'verb', 'number', 'sound', 'celebrity'],
-            ['verb', 'adjective', 'household item', 'emotion', 'color', 'place'],
-            ['type of music', 'adjective', 'verb', 'food', 'celebrity', 'object'],
-            ['adjective', 'musical instrument', 'verb', 'animal', 'food', 'number']
-        ];
         
         async function startMadlib() {
             const name = document.getElementById('playerName').value.trim();
@@ -221,7 +246,7 @@
                 }
                 
                 if (data.balance < 20) {
-                    alert('You need at least 20 Kyle Bucks to play! Go spin the wheel!');
+                    alert(`You need at least 20 Kyle Bucks to play! You have ${data.balance}. Go spin the wheel!`);
                     return;
                 }
                 
@@ -233,21 +258,54 @@
                 document.getElementById('balanceSection').classList.remove('hidden');
                 document.getElementById('playerBalance').textContent = currentBalance;
                 
-                // Generate random prompts
-                currentPrompts = promptSets[Math.floor(Math.random() * promptSets.length)];
+                // Load fresh prompts from the server
+                await loadNewPrompts();
                 
-                const inputsHtml = currentPrompts.map((prompt, i) => `
-                    <div class="input-group">
-                        <label>${prompt}</label>
-                        <input type="text" id="madlib-${i}" required>
-                    </div>
-                `).join('');
-                
-                document.getElementById('madlibInputs').innerHTML = inputsHtml;
-                document.getElementById('madlibForm').classList.remove('hidden');
             } catch (error) {
                 console.error('Error checking player:', error);
                 alert('Error checking player. Try again!');
+            }
+        }
+        
+        async function loadNewPrompts() {
+            // Make a dummy call to get a random set of prompts
+            // We'll send empty data just to get the prompts
+            try {
+                // First, fetch prompts by trying to generate with minimal data
+                // The API will return the prompts it's using
+                // For now, we'll use client-side prompt generation
+                
+                // Generate prompts from our templates (we'll inline a few examples)
+                const templates = [
+                    ['Adjective (ex: sparkly, weird, gigantic)', 'Noun - Plural (ex: staplers, donuts, emails)', 'Verb - Past Tense (ex: exploded, danced, screamed)', 'Profession (ex: astronaut, plumber, CEO)'],
+                    ['Person\'s Name (ex: Taylor Swift, Elon Musk)', 'Verb ending in -ing (ex: juggling, typing, screaming)', 'Animal (ex: llama, penguin, goldfish)', 'Color (ex: neon pink, muddy brown)'],
+                    ['Adjective - Feeling (ex: anxious, thrilled, confused)', 'Part of Body (ex: elbow, left pinky toe)', 'Silly Word (ex: blorp, yeet, flibbertigibbet)', 'Interjection (ex: Yikes!, Holy moly!, Zoinks!)'],
+                    ['Number (ex: seventeen, 420, one million)', 'Noun - Plural (ex: coffee mugs, keyboards, chairs)', 'Place (ex: the parking lot, Antarctica, Dave\'s desk)', 'Adverb (ex: mysteriously, frantically, slowly)'],
+                    ['Verb - Past Tense (ex: teleported, yodeled, exploded)', 'Animal (ex: ferret, peacock, hamster)', 'Piece of Clothing (ex: tube sock, Hawaiian shirt)', 'Profession (ex: ninja, barista, detective)'],
+                    ['Adjective (ex: mystical, haunted, legendary)', 'Place (ex: Mount Everest, the supply closet)', 'Person\'s Name (ex: Gandalf, Oprah, Batman)', 'Silly Word (ex: ka-chow, bazinga, booyah)'],
+                    ['Measure of Time (ex: eons, 47 minutes, centuries)', 'Verb ending in -ing (ex: meditating, breakdancing)', 'Color (ex: electric purple, seafoam green)', 'Number (ex: twelve, 666, ninety-nine)'],
+                    ['Adjective - Feeling (ex: enlightened, pumped, terrified)', 'Animal (ex: wise owl, confused sloth)', 'Interjection (ex: Eureka!, Bingo!, Sweet!)', 'Verb - Past Tense (ex: transcended, vibed, awakened)'],
+                    ['Adjective (ex: impossible, ridiculous, epic)', 'Noun - Plural (ex: rubber ducks, Post-it notes)', 'Place (ex: the roof, behind the fridge)', 'Profession (ex: wizard, crossing guard, DJ)'],
+                    ['Person\'s Name (ex: Gordon Ramsay, Beyoncé)', 'Verb ending in -ing (ex: backflipping, solving)', 'Animal (ex: majestic eagle, grumpy cat)', 'Silly Word (ex: whammy, kaboom, schwing)']
+                ];
+                
+                currentPrompts = templates[Math.floor(Math.random() * templates.length)];
+                
+                const inputsHtml = currentPrompts.map((prompt, i) => {
+                    return `
+                        <div class="input-group">
+                            <label>${prompt.split('(ex:')[0].trim()}</label>
+                            ${prompt.includes('(ex:') ? '<div class="example-text">' + prompt.split('(ex:')[1].replace(')', '') + '</div>' : ''}
+                            <input type="text" id="madlib-${i}" required placeholder="Enter your word...">
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('madlibInputs').innerHTML = inputsHtml;
+                document.getElementById('madlibForm').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading prompts:', error);
             }
         }
         
@@ -258,61 +316,3 @@
                 const input = document.getElementById(`madlib-${i}`);
                 if (!input || !input.value.trim()) {
                     alert('Please fill in all the words!');
-                    return;
-                }
-                words.push(input.value.trim());
-            }
-            
-            try {
-                const response = await fetch('/api/madlib', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: currentPlayerName, words })
-                });
-                
-                const data = await response.json();
-                
-                if (!data.success) {
-                    alert(data.error || 'Failed to generate story!');
-                    return;
-                }
-                
-                // Update balance
-                currentBalance = data.newBalance;
-                document.getElementById('playerBalance').textContent = currentBalance;
-                
-                // Show the story
-                document.getElementById('madlibStory').innerHTML = data.story;
-                document.getElementById('madlibForm').classList.add('hidden');
-                document.getElementById('madlibResult').classList.remove('hidden');
-            } catch (error) {
-                console.error('Error generating madlib:', error);
-                alert('Error generating story. Try again!');
-            }
-        }
-        
-        function playAgain() {
-            if (currentBalance < 20) {
-                alert('Not enough Kyle Bucks! You need 10 to play again.');
-                return;
-            }
-            
-            // Reset to form
-            document.getElementById('madlibResult').classList.add('hidden');
-            
-            // Generate new random prompts
-            currentPrompts = promptSets[Math.floor(Math.random() * promptSets.length)];
-            
-            const inputsHtml = currentPrompts.map((prompt, i) => `
-                <div class="input-group">
-                    <label>${prompt}</label>
-                    <input type="text" id="madlib-${i}" required>
-                </div>
-            `).join('');
-            
-            document.getElementById('madlibInputs').innerHTML = inputsHtml;
-            document.getElementById('madlibForm').classList.remove('hidden');
-        }
-    </script>
-</body>
-</html>
