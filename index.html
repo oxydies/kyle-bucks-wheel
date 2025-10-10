@@ -1016,10 +1016,10 @@
             
             
             try {
-                const response = await fetch('/api/admin/delete-spin', {
+                const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ index })
+                    body: JSON.stringify({ action: 'deleteSpin', index })
                 });
                 
                 const data = await response.json();
@@ -1038,7 +1038,7 @@
             
             
             try {
-                const response = await fetch('/api/admin/clear-spins', {
+                const response = await fetch('/api/admin', {
                     method: 'POST'
                 });
                 
@@ -1262,10 +1262,10 @@
             const password = document.getElementById('adminPassword').value;
             
             try {
-                const response = await fetch('/api/admin/login', {
+                const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
+                    body: JSON.stringify({ action: 'login', password })
                 });
                 
                 const data = await response.json();
@@ -1291,7 +1291,11 @@
         
         async function loadAdminData() {
             try {
-                const response = await fetch('/api/admin/data');
+                const response = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getData' })
+                });
                 const data = await response.json();
                 prizes = data.prizes || [];
                 players = data.players || {};
@@ -1344,10 +1348,10 @@
             });
             
             try {
-                const response = await fetch('/api/admin/prizes', {
+                const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prizes: newPrizes })
+                    body: JSON.stringify({ action: 'savePrizes', prizes: newPrizes })
                 });
                 
                 const data = await response.json();
@@ -1411,10 +1415,10 @@
             }
             
             try {
-                const response = await fetch('/api/admin/players', {
+                const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ players: newPlayers })
+                    body: JSON.stringify({ action: 'savePlayers', players: newPlayers })
                 });
                 
                 const data = await response.json();
