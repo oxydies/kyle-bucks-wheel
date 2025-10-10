@@ -1143,13 +1143,13 @@
         async function checkPlayer() {
             const name = document.getElementById('playerName').value.trim();
             if (!name) {
+                alert('Please enter your name!');
+                return;
+            }
             
             // Secret madlib game unlock
             if (name.toLowerCase() === 'madlib') {
                 window.location.href = '/madlib';
-                return;
-            }
-                alert('Please enter your name!');
                 return;
             }
             
@@ -1183,12 +1183,6 @@
             
             const name = currentPlayerName;
             if (!name) {
-            
-            // Secret madlib game unlock
-            if (name.toLowerCase() === 'madlib') {
-                window.location.href = '/madlib';
-                return;
-            }
                 alert('Please check your balance first!');
                 return;
             }
@@ -1433,12 +1427,6 @@
             const balance = parseInt(document.getElementById('newPlayerBalance').value) || 0;
             
             if (!name) {
-            
-            // Secret madlib game unlock
-            if (name.toLowerCase() === 'madlib') {
-                window.location.href = '/madlib';
-                return;
-            }
                 alert('Please enter a player name!');
                 return;
             }
@@ -1475,3 +1463,21 @@
                 
                 const data = await response.json();
                 if (data.success) {
+                    players = newPlayers;
+                    alert('✅ Players saved successfully! 💾');
+                }
+            } catch (error) {
+                console.error('Error saving players:', error);
+                alert('Error saving players. Please try again.');
+            }
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        loadData();
+        setInterval(loadRecentSpins, 30000);
+    </script>
+</body>
+</html>
