@@ -151,7 +151,7 @@
         
         <h1>🎭 SECRET MADLIB GAME 🎭</h1>
         <p class="subtitle">Create hilarious stories about office life!</p>
-        <div class="cost">Costs 10 Kyle Bucks per story</div>
+        <div class="cost">Costs 20 Kyle Bucks per story</div>
         
         <!-- Step 1: Enter Name -->
         <div id="nameEntry">
@@ -172,14 +172,14 @@
         <!-- Step 3: Madlib Form (hidden initially) -->
         <div id="madlibForm" class="hidden">
             <div class="madlib-input-grid" id="madlibInputs"></div>
-            <button onclick="generateMadlib()">🎲 Generate Story (10 Kyle Bucks)</button>
+            <button onclick="generateMadlib()">🎲 Generate Story (20 Kyle Bucks)</button>
         </div>
         
         <!-- Step 4: Story Result (hidden initially) -->
         <div id="madlibResult" class="hidden">
             <div class="madlib-story" id="madlibStory"></div>
             <div style="display: flex; gap: 10px;">
-                <button onclick="playAgain()">🔄 Play Again (10 Kyle Bucks)</button>
+                <button onclick="playAgain()">🔄 Play Again (20 Kyle Bucks)</button>
                 <button onclick="location.href='/'" style="background: #4ecdc4;">🎡 Back to Wheel</button>
             </div>
         </div>
@@ -220,8 +220,8 @@
                     return;
                 }
                 
-                if (data.balance < 10) {
-                    alert('You need at least 10 Kyle Bucks to play! Go spin the wheel!');
+                if (data.balance < 20) {
+                    alert('You need at least 20 Kyle Bucks to play! Go spin the wheel!');
                     return;
                 }
                 
@@ -292,7 +292,7 @@
         }
         
         function playAgain() {
-            if (currentBalance < 10) {
+            if (currentBalance < 20) {
                 alert('Not enough Kyle Bucks! You need 10 to play again.');
                 return;
             }
